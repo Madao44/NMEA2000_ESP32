@@ -61,3 +61,13 @@ sdkconfig.old
 managed_components/
 __pycache__/
 *.pyc
+
+# Images
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.ico
+*.svg
