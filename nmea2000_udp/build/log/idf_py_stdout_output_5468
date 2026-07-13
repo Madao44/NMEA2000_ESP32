@@ -1,0 +1,963 @@
+Command: C:\Espressif\python_env\idf5.5_py3.12_env\Scripts\python.exe C:\Espressif\frameworks\esp-idf-v5.5.4\tools/idf_monitor.py -p COM5 -b 115200 --toolchain-prefix xtensa-esp32s3-elf- --target esp32s3 --revision 0 F:\Isen\international\Stage UPC\nmea2000_udp\build\nmea2000_udp.elf F:\Isen\international\Stage UPC\nmea2000_udp\build\bootloader\bootloader.elf --force-color -m 'C:\Espressif\python_env\idf5.5_py3.12_env\Scripts\python.exe' 'C:\Espressif\frameworks\esp-idf-v5.5.4\tools\idf.py' '-p' 'COM5'
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xd24
+load:0x403cb700,len:0x2ef0
+entry 0x403c8924
+[0;32mI (24) boot: ESP-IDF GIT-NOTFOUND 2nd stage bootloader[0m
+[0;32mI (25) boot: compile time Jun 29 2026 12:37:32[0m
+[0;32mI (25) boot: Multicore bootloader[0m
+[0;32mI (25) boot: chip revision: v0.2[0m
+[0;32mI (28) boot: efuse block revision: v1.3[0m
+[0;32mI (32) boot.esp32s3: Boot SPI Speed : 80MHz[0m
+[0;32mI (36) boot.esp32s3: SPI Mode       : DIO[0m
+[0;32mI (39) boot.esp32s3: SPI Flash Size : 2MB[0m
+[0;32mI (43) boot: Enabling RNG early entropy source...[0m
+[0;32mI (48) boot: Partition Table:[0m
+[0;32mI (50) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (57) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (70) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (76) boot: End of partition table[0m
+[0;32mI (79) esp_image: segment 0: paddr=00010020 vaddr=3c090020 size=1b180h (110976) map[0m
+[0;32mI (106) esp_image: segment 1: paddr=0002b1a8 vaddr=3fc9ab00 size=04e4ch ( 20044) load[0m
+[0;32mI (111) esp_image: segment 2: paddr=0002fffc vaddr=40374000 size=0001ch (    28) load[0m
+[0;32mI (111) esp_image: segment 3: paddr=00030020 vaddr=42000020 size=86138h (549176) map[0m
+[0;32mI (215) esp_image: segment 4: paddr=000b6160 vaddr=4037401c size=16a40h ( 92736) load[0m
+[0;32mI (235) esp_image: segment 5: paddr=000ccba8 vaddr=50000000 size=00020h (    32) load[0m
+[0;32mI (244) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (244) boot: Disabling RNG early entropy source...[0m
+[0;32mI (254) cpu_start: Multicore app[0m
+[0;32mI (263) cpu_start: GPIO 44 and 43 are used as console UART I/O pins[0m
+[0;32mI (264) cpu_start: Pro cpu start user code[0m
+[0;32mI (264) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (265) app_init: Application information:[0m
+[0;32mI (269) app_init: Project name:     nmea2000_udp[0m
+[0;32mI (273) app_init: App version:      1[0m
+[0;32mI (277) app_init: Compile time:     Jun 29 2026 12:34:37[0m
+[0;32mI (282) app_init: ELF file SHA256:  7f47d95f4...[0m
+[0;32mI (286) app_init: ESP-IDF:          GIT-NOTFOUND[0m
+[0;32mI (290) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (294) efuse_init: Max chip rev:     v0.99 [0m
+[0;32mI (298) efuse_init: Chip rev:         v0.2[0m
+[0;32mI (302) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (309) heap_init: At 3FCA4538 len 000451D8 (276 KiB): RAM[0m
+[0;32mI (314) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM[0m
+[0;32mI (319) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM[0m
+[0;32mI (324) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM[0m
+[0;32mI (330) spi_flash: detected chip: mxic[0m
+[0;32mI (333) spi_flash: flash io: dio[0m
+[0;33mW (336) spi_flash: Detected size(16384k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (348) sleep_gpio: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (354) sleep_gpio: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (361) main_task: Started on CPU0[0m
+[0;32mI (381) main_task: Calling app_main()[0m
+[0;32mI (381) NMEA_UDP: === NMEA2000 → Wi-Fi UDP NMEA0183 ===[0m
+[0;32mI (401) pp: pp rom version: e7ae62f[0m
+[0;32mI (401) net80211: net80211 rom version: e7ae62f[0m
+[0;32mI (411) wifi:wifi driver task: 3fca9c48, prio:23, stack:6656, core=0[0m
+[0;32mI (421) wifi:wifi firmware version: 0947e8b[0m
+[0;32mI (421) wifi:wifi certification version: v7.0[0m
+[0;32mI (421) wifi:config NVS flash: enabled[0m
+[0;32mI (421) wifi:config nano formatting: disabled[0m
+[0;32mI (421) wifi:Init data frame dynamic rx buffer num: 32[0m
+[0;32mI (431) wifi:Init static rx mgmt buffer num: 5[0m
+[0;32mI (431) wifi:Init management short buffer num: 32[0m
+[0;32mI (431) wifi:Init dynamic tx buffer num: 32[0m
+[0;32mI (441) wifi:Init static tx FG buffer num: 2[0m
+[0;32mI (441) wifi:Init static rx buffer size: 1600[0m
+[0;32mI (451) wifi:Init static rx buffer num: 10[0m
+[0;32mI (451) wifi:Init dynamic rx buffer num: 32[0m
+[0;32mI (451) wifi_init: rx ba win: 6[0m
+[0;32mI (461) wifi_init: accept mbox: 6[0m
+[0;32mI (461) wifi_init: tcpip mbox: 32[0m
+[0;32mI (461) wifi_init: udp mbox: 6[0m
+[0;32mI (471) wifi_init: tcp mbox: 6[0m
+[0;32mI (471) wifi_init: tcp tx win: 5760[0m
+[0;32mI (471) wifi_init: tcp rx win: 5760[0m
+[0;32mI (471) wifi_init: tcp mss: 1440[0m
+[0;32mI (481) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (481) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;32mI (491) phy_init: phy_version 711,97bcf0a2,Aug 25 2025,19:04:10[0m
+[0;32mI (531) wifi:mode : sta (90:70:69:18:9b:bc)[0m
+[0;32mI (531) wifi:enable tsf[0m
+[0;32mI (531) NMEA_UDP: Connexion à SARTI_Wifi_NI...[0m
+[0;32mI (621) wifi:new:<11,0>, old:<1,0>, ap:<255,255>, sta:<11,0>, prof:1, snd_ch_cfg:0x0[0m
+[0;32mI (621) wifi:state: init -> auth (0xb0)[0m
+[0;32mI (631) wifi:state: auth -> assoc (0x0)[0m
+[0;32mI (631) wifi:state: assoc -> run (0x10)[0m
+[0;32mI (661) wifi:connected with SARTI_Wifi_NI, aid = 2, channel 11, BW20, bssid = 00:16:78:22:db:78[0m
+[0;32mI (661) wifi:security: WPA2-PSK, phy: bgn, rssi: -44, cipher(pairwise:0x3, group:0x1), pmf:0[0m
+[0;32mI (671) wifi:pm start, type: 1[0m
+
+[0;32mI (671) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us[0m
+[0;32mI (671) wifi:set rx beacon pti, rx_bcn_pti: 0, bcn_timeout: 25000, mt_pti: 0, mt_time: 10000[0m
+[0;32mI (721) wifi:dp: 2, bi: 102400, li: 4, scale listen interval from 307200 us to 409600 us[0m
+[0;32mI (721) wifi:AP's beacon interval = 102400 us, DTIM period = 2[0m
+[0;32mI (1711) esp_netif_handlers: sta ip: 10.5.159.169, mask: 255.255.255.192, gw: 10.5.159.190[0m
+[0;32mI (1711) NMEA_UDP: IP obtenue : 10.5.159.169[0m
+[0;32mI (1711) NMEA_UDP: Wi-Fi connecté ![0m
+[0;32mI (1711) NMEA_UDP: TWAI démarré – RX=GPIO4 TX=GPIO5 @ 250000 bps[0m
+[0;32mI (1721) NMEA_UDP: UDP broadcast prêt → 255.255.255.255:10110[0m
+[0;32mI (1009731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1009731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1010731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1010731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1011731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1011731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (1011761) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (1011761) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (1012731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1012731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1013731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1013731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (1014611) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (1014741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1014741) NMEA_UDP: TX GPRMC[0m
+[0;33mW (1015461) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (1015461) NMEA_UDP: CAN err=0x00000010[0m
+[0;32mI (1015741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1015741) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1016741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1016741) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1017751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1017751) NMEA_UDP: TX GPRMC[0m
+[0;33mW (1018231) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (1018751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1018751) NMEA_UDP: TX GPRMC[0m
+[0;33mW (1019161) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (1019181) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (1019751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1019751) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1020761) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1020761) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1021761) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1021761) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1022771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1022771) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1023771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1023771) NMEA_UDP: TX GPRMC[0m
+[0;33mW (1024101) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (1024771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1024771) NMEA_UDP: TX GPRMC[0m
+[0;33mW (1024861) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (1025771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1025771) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1026771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1026771) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1027771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1027771) NMEA_UDP: TX GPRMC[0m
+[0;33mW (1028631) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (1028771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1028771) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1029771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1029771) NMEA_UDP: TX GPRMC[0m
+[0;33mW (1029931) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (1030771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1030771) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1031781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (1031781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1671) esp_netif_handlers: sta ip: 10.5.159.169, mask: 255.255.255.192, gw: 10.5.159.190[0m
+[0;32mI (1671) NMEA_UDP: IP obtenue : 10.5.159.169[0m
+[0;32mI (1671) NMEA_UDP: Wi-Fi connecté ![0m
+[0;32mI (1671) NMEA_UDP: TWAI démarré – RX=GPIO4 TX=GPIO5 @ 250000 bps[0m
+[0;32mI (1681) NMEA_UDP: UDP broadcast prêt → 255.255.255.255:10110[0m
+[0;33mW (2401) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (2691) NMEA_UDP: TX GPGGA[0m
+[0;32mI (2691) NMEA_UDP: TX GPRMC[0m
+[0;33mW (3601) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (3701) NMEA_UDP: TX GPGGA[0m
+[0;32mI (3701) NMEA_UDP: TX GPRMC[0m
+[0;33mW (4561) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (4701) NMEA_UDP: TX GPGGA[0m
+[0;32mI (4701) NMEA_UDP: TX GPRMC[0m
+[0;32mI (5701) NMEA_UDP: TX GPGGA[0m
+[0;32mI (5701) NMEA_UDP: TX GPRMC[0m
+[0;33mW (5711) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (6141) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (6161) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (6671) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (6711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (6711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (7711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (7711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (8711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (8711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (9711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (9711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (10711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (10711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (11721) NMEA_UDP: TX GPGGA[0m
+[0;32mI (11721) NMEA_UDP: TX GPRMC[0m
+[0;32mI (12731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (12731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (13001) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (13731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (13731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (14591) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (14611) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (14731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (14731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (15411) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (15731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (15731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (16731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (16731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (17121) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (17121) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (17731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (17731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (18371) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (18731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (18731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (19731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (19731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (20741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (20741) NMEA_UDP: TX GPRMC[0m
+ESP-ROM:esp32s3-20210327
+Build:Mar 27 2021
+rst:0x1 (POWERON),boot:0x8 (SPI_FAST_FLASH_BOOT)
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fce2820,len:0x14f0
+load:0x403c8700,len:0xd24
+load:0x403cb700,len:0x2ef0
+entry 0x403c8924
+[0;32mI (24) boot: ESP-IDF GIT-NOTFOUND 2nd stage bootloader[0m
+[0;32mI (25) boot: compile time Jun 29 2026 12:37:32[0m
+[0;32mI (25) boot: Multicore bootloader[0m
+[0;32mI (25) boot: chip revision: v0.2[0m
+[0;32mI (28) boot: efuse block revision: v1.3[0m
+[0;32mI (32) boot.esp32s3: Boot SPI Speed : 80MHz[0m
+[0;32mI (36) boot.esp32s3: SPI Mode       : DIO[0m
+[0;32mI (39) boot.esp32s3: SPI Flash Size : 2MB[0m
+[0;32mI (43) boot: Enabling RNG early entropy source...[0m
+[0;32mI (48) boot: Partition Table:[0m
+[0;32mI (50) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (57) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (63) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (70) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (76) boot: End of partition table[0m
+[0;32mI (79) esp_image: segment 0: paddr=00010020 vaddr=3c090020 size=1b180h (110976) map[0m
+[0;32mI (106) esp_image: segment 1: paddr=0002b1a8 vaddr=3fc9ab00 size=04e4ch ( 20044) load[0m
+[0;32mI (111) esp_image: segment 2: paddr=0002fffc vaddr=40374000 size=0001ch (    28) load[0m
+[0;32mI (111) esp_image: segment 3: paddr=00030020 vaddr=42000020 size=86138h (549176) map[0m
+[0;32mI (215) esp_image: segment 4: paddr=000b6160 vaddr=4037401c size=16a40h ( 92736) load[0m
+[0;32mI (235) esp_image: segment 5: paddr=000ccba8 vaddr=50000000 size=00020h (    32) load[0m
+[0;32mI (244) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (244) boot: Disabling RNG early entropy source...[0m
+[0;32mI (254) cpu_start: Multicore app[0m
+[0;32mI (263) cpu_start: GPIO 44 and 43 are used as console UART I/O pins[0m
+[0;32mI (264) cpu_start: Pro cpu start user code[0m
+[0;32mI (264) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (265) app_init: Application information:[0m
+[0;32mI (269) app_init: Project name:     nmea2000_udp[0m
+[0;32mI (273) app_init: App version:      1[0m
+[0;32mI (277) app_init: Compile time:     Jun 29 2026 12:34:37[0m
+[0;32mI (282) app_init: ELF file SHA256:  7f47d95f4...[0m
+[0;32mI (286) app_init: ESP-IDF:          GIT-NOTFOUND[0m
+[0;32mI (290) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (294) efuse_init: Max chip rev:     v0.99 [0m
+[0;32mI (298) efuse_init: Chip rev:         v0.2[0m
+[0;32mI (302) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (309) heap_init: At 3FCA4538 len 000451D8 (276 KiB): RAM[0m
+[0;32mI (314) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM[0m
+[0;32mI (319) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM[0m
+[0;32mI (324) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM[0m
+[0;32mI (330) spi_flash: detected chip: mxic[0m
+[0;32mI (333) spi_flash: flash io: dio[0m
+[0;33mW (336) spi_flash: Detected size(16384k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (348) sleep_gpio: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (354) sleep_gpio: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (361) main_task: Started on CPU0[0m
+[0;32mI (381) main_task: Calling app_main()[0m
+[0;32mI (381) NMEA_UDP: === NMEA2000 → Wi-Fi UDP NMEA0183 ===[0m
+[0;32mI (401) pp: pp rom version: e7ae62f[0m
+[0;32mI (401) net80211: net80211 rom version: e7ae62f[0m
+[0;32mI (411) wifi:wifi driver task: 3fca9c48, prio:23, stack:6656, core=0[0m
+[0;32mI (421) wifi:wifi firmware version: 0947e8b[0m
+[0;32mI (421) wifi:wifi certification version: v7.0[0m
+[0;32mI (421) wifi:config NVS flash: enabled[0m
+[0;32mI (421) wifi:config nano formatting: disabled[0m
+[0;32mI (421) wifi:Init data frame dynamic rx buffer num: 32[0m
+[0;32mI (431) wifi:Init static rx mgmt buffer num: 5[0m
+[0;32mI (431) wifi:Init management short buffer num: 32[0m
+[0;32mI (431) wifi:Init dynamic tx buffer num: 32[0m
+[0;32mI (441) wifi:Init static tx FG buffer num: 2[0m
+[0;32mI (441) wifi:Init static rx buffer size: 1600[0m
+[0;32mI (451) wifi:Init static rx buffer num: 10[0m
+[0;32mI (451) wifi:Init dynamic rx buffer num: 32[0m
+[0;32mI (451) wifi_init: rx ba win: 6[0m
+[0;32mI (461) wifi_init: accept mbox: 6[0m
+[0;32mI (461) wifi_init: tcpip mbox: 32[0m
+[0;32mI (461) wifi_init: udp mbox: 6[0m
+[0;32mI (471) wifi_init: tcp mbox: 6[0m
+[0;32mI (471) wifi_init: tcp tx win: 5760[0m
+[0;32mI (471) wifi_init: tcp rx win: 5760[0m
+[0;32mI (471) wifi_init: tcp mss: 1440[0m
+[0;32mI (481) wifi_init: WiFi IRAM OP enabled[0m
+[0;32mI (481) wifi_init: WiFi RX IRAM OP enabled[0m
+[0;32mI (491) phy_init: phy_version 711,97bcf0a2,Aug 25 2025,19:04:10[0m
+[0;32mI (531) wifi:mode : sta (90:70:69:18:9b:bc)[0m
+[0;32mI (531) wifi:enable tsf[0m
+[0;32mI (531) NMEA_UDP: Connexion à SARTI_Wifi_NI...[0m
+[0;32mI (541) wifi:new:<11,0>, old:<1,0>, ap:<255,255>, sta:<11,0>, prof:1, snd_ch_cfg:0x0[0m
+[0;32mI (541) wifi:state: init -> auth (0xb0)[0m
+[0;32mI (551) wifi:state: auth -> assoc (0x0)[0m
+[0;32mI (571) wifi:state: assoc -> run (0x10)[0m
+[0;32mI (601) wifi:connected with SARTI_Wifi_NI, aid = 2, channel 11, BW20, bssid = 00:16:78:22:db:78[0m
+[0;32mI (601) wifi:security: WPA2-PSK, phy: bgn, rssi: -61, cipher(pairwise:0x3, group:0x1), pmf:0[0m
+[0;32mI (611) wifi:pm start, type: 1[0m
+
+[0;32mI (611) wifi:dp: 1, bi: 102400, li: 3, scale listen interval from 307200 us to 307200 us[0m
+[0;32mI (621) wifi:set rx beacon pti, rx_bcn_pti: 0, bcn_timeout: 25000, mt_pti: 0, mt_time: 10000[0m
+[0;32mI (631) wifi:dp: 2, bi: 102400, li: 4, scale listen interval from 307200 us to 409600 us[0m
+[0;32mI (631) wifi:AP's beacon interval = 102400 us, DTIM period = 2[0m
+[0;32mI (1681) esp_netif_handlers: sta ip: 10.5.159.169, mask: 255.255.255.192, gw: 10.5.159.190[0m
+[0;32mI (1681) NMEA_UDP: IP obtenue : 10.5.159.169[0m
+[0;32mI (1681) NMEA_UDP: Wi-Fi connecté ![0m
+[0;32mI (1681) NMEA_UDP: TWAI démarré – RX=GPIO4 TX=GPIO5 @ 250000 bps[0m
+[0;32mI (1691) NMEA_UDP: UDP broadcast prêt → 255.255.255.255:10110[0m
+[0;33mW (3571) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (3571) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (3701) NMEA_UDP: TX GPGGA[0m
+[0;32mI (3701) NMEA_UDP: TX GPRMC[0m
+[0;32mI (4701) NMEA_UDP: TX GPGGA[0m
+[0;32mI (4701) NMEA_UDP: TX GPRMC[0m
+[0;33mW (4831) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (4881) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (4881) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (4881) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (5701) NMEA_UDP: TX GPGGA[0m
+[0;32mI (5701) NMEA_UDP: TX GPRMC[0m
+[0;32mI (6701) NMEA_UDP: TX GPGGA[0m
+[0;32mI (6701) NMEA_UDP: TX GPRMC[0m
+[0;32mI (7701) NMEA_UDP: TX GPGGA[0m
+[0;32mI (7701) NMEA_UDP: TX GPRMC[0m
+[0;33mW (8251) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (8251) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (8711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (8711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (9711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (9711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (10711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (10711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (11711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (11711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (12711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (12711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (13711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (13711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (14711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (14711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (15711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (15711) NMEA_UDP: TX GPRMC[0m
+[0;33mW (15831) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (15831) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (15831) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (16711) NMEA_UDP: TX GPGGA[0m
+[0;32mI (16711) NMEA_UDP: TX GPRMC[0m
+[0;32mI (17721) NMEA_UDP: TX GPGGA[0m
+[0;32mI (17721) NMEA_UDP: TX GPRMC[0m
+[0;32mI (18721) NMEA_UDP: TX GPGGA[0m
+[0;32mI (18721) NMEA_UDP: TX GPRMC[0m
+[0;33mW (18801) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (19611) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (19631) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (19631) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (19631) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (19721) NMEA_UDP: TX GPGGA[0m
+[0;32mI (19721) NMEA_UDP: TX GPRMC[0m
+[0;32mI (20721) NMEA_UDP: TX GPGGA[0m
+[0;32mI (20721) NMEA_UDP: TX GPRMC[0m
+[0;32mI (21721) NMEA_UDP: TX GPGGA[0m
+[0;32mI (21721) NMEA_UDP: TX GPRMC[0m
+[0;32mI (22731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (22731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (23731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (23731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (24731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (24731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (25731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (25731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (26731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (26731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (27731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (27731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (28731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (28731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (29731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (29731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (30151) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (30731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (30731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (31101) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (31731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (31731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (31861) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (32731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (32731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (33311) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (33311) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (33311) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (33311) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (33731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (33731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (34731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (34731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (35731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (35731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (36731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (36731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (37731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (37731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (37891) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (38731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (38731) NMEA_UDP: TX GPRMC[0m
+[0;32mI (39741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (39741) NMEA_UDP: TX GPRMC[0m
+[0;33mW (40501) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (40741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (40741) NMEA_UDP: TX GPRMC[0m
+[0;33mW (40951) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (41741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (41741) NMEA_UDP: TX GPRMC[0m
+[0;33mW (41781) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (41801) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (42751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (42751) NMEA_UDP: TX GPRMC[0m
+[0;33mW (43561) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (43561) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (43751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (43751) NMEA_UDP: TX GPRMC[0m
+[0;32mI (44751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (44751) NMEA_UDP: TX GPRMC[0m
+[0;33mW (45671) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (45671) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (45671) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (45671) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (45751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (45751) NMEA_UDP: TX GPRMC[0m
+[0;33mW (46001) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (46751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (46751) NMEA_UDP: TX GPRMC[0m
+[0;33mW (47281) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (47751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (47751) NMEA_UDP: TX GPRMC[0m
+[0;32mI (48751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (48751) NMEA_UDP: TX GPRMC[0m
+[0;32mI (49751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (49751) NMEA_UDP: TX GPRMC[0m
+[0;32mI (50751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (50751) NMEA_UDP: TX GPRMC[0m
+[0;32mI (51751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (51751) NMEA_UDP: TX GPRMC[0m
+[0;32mI (52751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (52751) NMEA_UDP: TX GPRMC[0m
+[0;33mW (53061) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (53751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (53751) NMEA_UDP: TX GPRMC[0m
+[0;32mI (54751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (54751) NMEA_UDP: TX GPRMC[0m
+[0;33mW (55481) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (55621) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (55751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (55751) NMEA_UDP: TX GPRMC[0m
+[0;33mW (56521) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (56751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (56751) NMEA_UDP: TX GPRMC[0m
+[0;33mW (56781) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (56781) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (56781) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (56781) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (57751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (57751) NMEA_UDP: TX GPRMC[0m
+[0;33mW (58631) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (58761) NMEA_UDP: TX GPGGA[0m
+[0;32mI (58761) NMEA_UDP: TX GPRMC[0m
+[0;33mW (58891) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (59761) NMEA_UDP: TX GPGGA[0m
+[0;32mI (59761) NMEA_UDP: TX GPRMC[0m
+[0;32mI (60771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (60771) NMEA_UDP: TX GPRMC[0m
+[0;33mW (61001) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (61771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (61771) NMEA_UDP: TX GPRMC[0m
+[0;33mW (62351) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (62771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (62771) NMEA_UDP: TX GPRMC[0m
+[0;32mI (63781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (63781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (64781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (64781) NMEA_UDP: TX GPRMC[0m
+[0;33mW (64961) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (64961) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (64961) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (65781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (65781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (66781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (66781) NMEA_UDP: TX GPRMC[0m
+[0;33mW (67071) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (67781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (67781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (68781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (68781) NMEA_UDP: TX GPRMC[0m
+[0;33mW (69441) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (69781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (69781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (70781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (70781) NMEA_UDP: TX GPRMC[0m
+[0;33mW (71291) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (71781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (71781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (72781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (72781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (73781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (73781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (74781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (74781) NMEA_UDP: TX GPRMC[0m
+[0;33mW (75541) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (75781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (75781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (76781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (76781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (77791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (77791) NMEA_UDP: TX GPRMC[0m
+[0;33mW (78181) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (78681) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (78791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (78791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (79791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (79791) NMEA_UDP: TX GPRMC[0m
+[0;33mW (79991) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (79991) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (79991) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (80791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (80791) NMEA_UDP: TX GPRMC[0m
+[0;33mW (81441) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (81791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (81791) NMEA_UDP: TX GPRMC[0m
+[0;33mW (82701) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (82791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (82791) NMEA_UDP: TX GPRMC[0m
+[0;33mW (83151) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (83651) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (83791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (83791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (84791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (84791) NMEA_UDP: TX GPRMC[0m
+[0;33mW (85361) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (85361) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (85361) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (85791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (85791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (86791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (86791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (87791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (87791) NMEA_UDP: TX GPRMC[0m
+[0;33mW (87971) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (88791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (88791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (89791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (89791) NMEA_UDP: TX GPRMC[0m
+[0;33mW (90441) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (90791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (90791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (91791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (91791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (92791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (92791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (93791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (93791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (94791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (94791) NMEA_UDP: TX GPRMC[0m
+[0;33mW (95161) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (95791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (95791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (96791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (96791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (97791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (97791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (98791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (98791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (99791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (99791) NMEA_UDP: TX GPRMC[0m
+[0;33mW (99791) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (99931) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (99931) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (100801) NMEA_UDP: TX GPGGA[0m
+[0;32mI (100801) NMEA_UDP: TX GPRMC[0m
+[0;33mW (101191) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (101691) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (101801) NMEA_UDP: TX GPGGA[0m
+[0;32mI (101801) NMEA_UDP: TX GPRMC[0m
+[0;33mW (102641) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (102801) NMEA_UDP: TX GPGGA[0m
+[0;32mI (102801) NMEA_UDP: TX GPRMC[0m
+[0;32mI (103811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (103811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (104751) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (104811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (104811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (105081) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (105081) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (105081) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (105811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (105811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (106811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (106811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (106861) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (107811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (107811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (108231) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (108811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (108811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (109731) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (109731) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (109731) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (109811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (109811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (110351) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (110811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (110811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (111811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (111811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (112451) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (112811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (112811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (113811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (113811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (114811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (114811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (115201) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (115811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (115811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (116361) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (116811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (116811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (116811) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (117711) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (117731) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (117731) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (117731) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (117811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (117811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (118811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (118811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (119721) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (119811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (119811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (120381) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (120811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (120811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (121811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (121811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (122811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (122811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (123811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (123811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (124811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (124811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (125811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (125811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (126611) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (126811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (126811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (127811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (127811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (128811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (128811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (129811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (129811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (130411) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (130811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (130811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (131811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (131811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (132811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (132811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (133811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (133811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (134621) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (134621) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (134621) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (134811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (134811) NMEA_UDP: TX GPRMC[0m
+[0;33mW (135691) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (135811) NMEA_UDP: TX GPGGA[0m
+[0;32mI (135811) NMEA_UDP: TX GPRMC[0m
+[0;32mI (136821) NMEA_UDP: TX GPGGA[0m
+[0;32mI (136821) NMEA_UDP: TX GPRMC[0m
+[0;32mI (137831) NMEA_UDP: TX GPGGA[0m
+[0;32mI (137831) NMEA_UDP: TX GPRMC[0m
+[0;32mI (138831) NMEA_UDP: TX GPGGA[0m
+[0;32mI (138831) NMEA_UDP: TX GPRMC[0m
+[0;33mW (138841) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (138841) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (139831) NMEA_UDP: TX GPGGA[0m
+[0;32mI (139831) NMEA_UDP: TX GPRMC[0m
+[0;33mW (139891) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (140841) NMEA_UDP: TX GPGGA[0m
+[0;32mI (140841) NMEA_UDP: TX GPRMC[0m
+[0;32mI (141841) NMEA_UDP: TX GPGGA[0m
+[0;32mI (141841) NMEA_UDP: TX GPRMC[0m
+[0;32mI (142841) NMEA_UDP: TX GPGGA[0m
+[0;32mI (142841) NMEA_UDP: TX GPRMC[0m
+[0;32mI (143841) NMEA_UDP: TX GPGGA[0m
+[0;32mI (143841) NMEA_UDP: TX GPRMC[0m
+[0;33mW (143991) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (144841) NMEA_UDP: TX GPGGA[0m
+[0;32mI (144841) NMEA_UDP: TX GPRMC[0m
+[0;33mW (145171) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (145191) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (145851) NMEA_UDP: TX GPGGA[0m
+[0;32mI (145851) NMEA_UDP: TX GPRMC[0m
+[0;32mI (146861) NMEA_UDP: TX GPGGA[0m
+[0;32mI (146861) NMEA_UDP: TX GPRMC[0m
+[0;33mW (147511) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (147511) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (147511) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (147861) NMEA_UDP: TX GPGGA[0m
+[0;32mI (147861) NMEA_UDP: TX GPRMC[0m
+[0;32mI (148861) NMEA_UDP: TX GPGGA[0m
+[0;32mI (148861) NMEA_UDP: TX GPRMC[0m
+[0;32mI (149871) NMEA_UDP: TX GPGGA[0m
+[0;32mI (149871) NMEA_UDP: TX GPRMC[0m
+[0;32mI (150871) NMEA_UDP: TX GPGGA[0m
+[0;32mI (150871) NMEA_UDP: TX GPRMC[0m
+[0;32mI (151871) NMEA_UDP: TX GPGGA[0m
+[0;32mI (151871) NMEA_UDP: TX GPRMC[0m
+[0;32mI (152871) NMEA_UDP: TX GPGGA[0m
+[0;32mI (152871) NMEA_UDP: TX GPRMC[0m
+[0;32mI (153871) NMEA_UDP: TX GPGGA[0m
+[0;32mI (153871) NMEA_UDP: TX GPRMC[0m
+[0;32mI (154871) NMEA_UDP: TX GPGGA[0m
+[0;32mI (154871) NMEA_UDP: TX GPRMC[0m
+[0;32mI (155871) NMEA_UDP: TX GPGGA[0m
+[0;32mI (155871) NMEA_UDP: TX GPRMC[0m
+[0;32mI (156871) NMEA_UDP: TX GPGGA[0m
+[0;32mI (156871) NMEA_UDP: TX GPRMC[0m
+[0;33mW (157101) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (157841) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (157861) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (157871) NMEA_UDP: TX GPGGA[0m
+[0;32mI (157871) NMEA_UDP: TX GPRMC[0m
+[0;32mI (158881) NMEA_UDP: TX GPGGA[0m
+[0;32mI (158881) NMEA_UDP: TX GPRMC[0m
+[0;32mI (159891) NMEA_UDP: TX GPGGA[0m
+[0;32mI (159891) NMEA_UDP: TX GPRMC[0m
+[0;33mW (159931) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (160671) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (160891) NMEA_UDP: TX GPGGA[0m
+[0;32mI (160891) NMEA_UDP: TX GPRMC[0m
+[0;32mI (161891) NMEA_UDP: TX GPGGA[0m
+[0;32mI (161891) NMEA_UDP: TX GPRMC[0m
+[0;32mI (162891) NMEA_UDP: TX GPGGA[0m
+[0;32mI (162891) NMEA_UDP: TX GPRMC[0m
+[0;32mI (163891) NMEA_UDP: TX GPGGA[0m
+[0;32mI (163891) NMEA_UDP: TX GPRMC[0m
+[0;32mI (164891) NMEA_UDP: TX GPGGA[0m
+[0;32mI (164891) NMEA_UDP: TX GPRMC[0m
+[0;32mI (165901) NMEA_UDP: TX GPGGA[0m
+[0;32mI (165901) NMEA_UDP: TX GPRMC[0m
+[0;32mI (166901) NMEA_UDP: TX GPGGA[0m
+[0;32mI (166901) NMEA_UDP: TX GPRMC[0m
+[0;33mW (167651) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (167901) NMEA_UDP: TX GPGGA[0m
+[0;32mI (167901) NMEA_UDP: TX GPRMC[0m
+[0;33mW (168391) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (168901) NMEA_UDP: TX GPGGA[0m
+[0;32mI (168901) NMEA_UDP: TX GPRMC[0m
+[0;33mW (169021) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (169521) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (169901) NMEA_UDP: TX GPGGA[0m
+[0;32mI (169901) NMEA_UDP: TX GPRMC[0m
+[0;32mI (170901) NMEA_UDP: TX GPGGA[0m
+[0;32mI (170901) NMEA_UDP: TX GPRMC[0m
+[0;32mI (171901) NMEA_UDP: TX GPGGA[0m
+[0;32mI (171901) NMEA_UDP: TX GPRMC[0m
+[0;32mI (172901) NMEA_UDP: TX GPGGA[0m
+[0;32mI (172901) NMEA_UDP: TX GPRMC[0m
+[0;32mI (173911) NMEA_UDP: TX GPGGA[0m
+[0;32mI (173911) NMEA_UDP: TX GPRMC[0m
+[0;33mW (173991) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (173991) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (173991) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (174911) NMEA_UDP: TX GPGGA[0m
+[0;32mI (174911) NMEA_UDP: TX GPRMC[0m
+[0;33mW (174991) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (174991) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (175001) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (175911) NMEA_UDP: TX GPGGA[0m
+[0;32mI (175911) NMEA_UDP: TX GPRMC[0m
+[0;33mW (176301) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (176911) NMEA_UDP: TX GPGGA[0m
+[0;32mI (176911) NMEA_UDP: TX GPRMC[0m
+[0;32mI (177911) NMEA_UDP: TX GPGGA[0m
+[0;32mI (177911) NMEA_UDP: TX GPRMC[0m
+[0;33mW (178611) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (178921) NMEA_UDP: TX GPGGA[0m
+[0;32mI (178921) NMEA_UDP: TX GPRMC[0m
+[0;32mI (179921) NMEA_UDP: TX GPGGA[0m
+[0;32mI (179921) NMEA_UDP: TX GPRMC[0m
+[0;32mI (180921) NMEA_UDP: TX GPGGA[0m
+[0;32mI (180921) NMEA_UDP: TX GPRMC[0m
+[0;33mW (181321) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (181321) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (181331) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (181931) NMEA_UDP: TX GPGGA[0m
+[0;32mI (181931) NMEA_UDP: TX GPRMC[0m
+[0;33mW (182531) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (182931) NMEA_UDP: TX GPGGA[0m
+[0;32mI (182931) NMEA_UDP: TX GPRMC[0m
+[0;32mI (183941) NMEA_UDP: TX GPGGA[0m
+[0;32mI (183941) NMEA_UDP: TX GPRMC[0m
+[0;32mI (184941) NMEA_UDP: TX GPGGA[0m
+[0;32mI (184941) NMEA_UDP: TX GPRMC[0m
+[0;32mI (185941) NMEA_UDP: TX GPGGA[0m
+[0;32mI (185941) NMEA_UDP: TX GPRMC[0m
+[0;32mI (186941) NMEA_UDP: TX GPGGA[0m
+[0;32mI (186941) NMEA_UDP: TX GPRMC[0m
+[0;32mI (187941) NMEA_UDP: TX GPGGA[0m
+[0;32mI (187941) NMEA_UDP: TX GPRMC[0m
+[0;33mW (188461) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (188461) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (188461) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (188461) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (188941) NMEA_UDP: TX GPGGA[0m
+[0;32mI (188941) NMEA_UDP: TX GPRMC[0m
+[0;32mI (189941) NMEA_UDP: TX GPGGA[0m
+[0;32mI (189941) NMEA_UDP: TX GPRMC[0m
+[0;32mI (190951) NMEA_UDP: TX GPGGA[0m
+[0;32mI (190951) NMEA_UDP: TX GPRMC[0m
+[0;33mW (191861) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (191871) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (191871) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (191871) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (191951) NMEA_UDP: TX GPGGA[0m
+[0;32mI (191951) NMEA_UDP: TX GPRMC[0m
+[0;32mI (192951) NMEA_UDP: TX GPGGA[0m
+[0;32mI (192951) NMEA_UDP: TX GPRMC[0m
+[0;33mW (193931) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (193951) NMEA_UDP: TX GPGGA[0m
+[0;32mI (193951) NMEA_UDP: TX GPRMC[0m
+[0;32mI (194961) NMEA_UDP: TX GPGGA[0m
+[0;32mI (194961) NMEA_UDP: TX GPRMC[0m
+[0;33mW (195741) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (195971) NMEA_UDP: TX GPGGA[0m
+[0;32mI (195971) NMEA_UDP: TX GPRMC[0m
+W (196081) NMEA_UDP: CAN err=0x00000008
+[0;33mW (196501) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (196971) NMEA_UDP: TX GPGGA[0m
+[0;32mI (196971) NMEA_UDP: TX GPRMC[0m
+[0;33mW (197001) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (197971) NMEA_UDP: TX GPGGA[0m
+[0;32mI (197971) NMEA_UDP: TX GPRMC[0m
+[0;32mI (198971) NMEA_UDP: TX GPGGA[0m
+[0;32mI (198971) NMEA_UDP: TX GPRMC[0m
+[0;33mW (199211) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (199971) NMEA_UDP: TX GPGGA[0m
+[0;32mI (199971) NMEA_UDP: TX GPRMC[0m
+[0;32mI (200971) NMEA_UDP: TX GPGGA[0m
+[0;32mI (200971) NMEA_UDP: TX GPRMC[0m
+[0;33mW (201471) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (201971) NMEA_UDP: TX GPGGA[0m
+[0;32mI (201971) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1711) esp_netif_handlers: sta ip: 10.5.159.169, mask: 255.255.255.192, gw: 10.5.159.190[0m
+[0;32mI (1711) NMEA_UDP: IP obtenue : 10.5.159.169[0m
+[0;32mI (1711) NMEA_UDP: Wi-Fi connecté ![0m
+[0;32mI (1711) NMEA_UDP: TWAI démarré – RX=GPIO4 TX=GPIO5 @ 250000 bps[0m
+[0;32mI (1721) NMEA_UDP: UDP broadcast prêt → 255.255.255.255:10110[0m
+[0;32mI (2731) NMEA_UDP: TX GPGGA[0m
+[0;32mI (2731) NMEA_UDP: TX GPRMC[0m
+[0;33mW (2811) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (2831) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (3331) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (3731) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (3741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (3741) NMEA_UDP: TX GPRMC[0m
+[0;32mI (4751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (4751) NMEA_UDP: TX GPRMC[0m
+[0;32mI (5761) NMEA_UDP: TX GPGGA[0m
+[0;32mI (5761) NMEA_UDP: TX GPRMC[0m
+[0;32mI (6771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (6771) NMEA_UDP: TX GPRMC[0m
+[0;33mW (7451) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (7781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (7781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (8781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (8781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (9781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (9781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (10781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (10781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (11781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (11781) NMEA_UDP: TX GPRMC[0m
+[0;33mW (12271) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (12781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (12781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (13781) NMEA_UDP: TX GPGGA[0m
+[0;32mI (13781) NMEA_UDP: TX GPRMC[0m
+[0;32mI (14791) NMEA_UDP: TX GPGGA[0m
+[0;32mI (14791) NMEA_UDP: TX GPRMC[0m
+[0;32mI (1721) esp_netif_handlers: sta ip: 10.5.159.169, mask: 255.255.255.192, gw: 10.5.159.190[0m
+[0;32mI (1721) NMEA_UDP: IP obtenue : 10.5.159.169[0m
+[0;32mI (1721) NMEA_UDP: Wi-Fi connecté ![0m
+[0;32mI (1721) NMEA_UDP: TWAI démarré – RX=GPIO4 TX=GPIO5 @ 250000 bps[0m
+[0;32mI (1731) NMEA_UDP: UDP broadcast prêt → 255.255.255.255:10110[0m
+[0;33mW (2251) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (2651) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (2741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (2741) NMEA_UDP: TX GPRMC[0m
+[0;32mI (3741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (3741) NMEA_UDP: TX GPRMC[0m
+[0;32mI (4741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (4741) NMEA_UDP: TX GPRMC[0m
+[0;32mI (5741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (5741) NMEA_UDP: TX GPRMC[0m
+[0;32mI (6741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (6741) NMEA_UDP: TX GPRMC[0m
+[0;33mW (6771) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (7741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (7741) NMEA_UDP: TX GPRMC[0m
+[0;32mI (8741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (8741) NMEA_UDP: TX GPRMC[0m
+[0;33mW (8981) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (9741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (9741) NMEA_UDP: TX GPRMC[0m
+[0;32mI (10741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (10741) NMEA_UDP: TX GPRMC[0m
+[0;32mI (11741) NMEA_UDP: TX GPGGA[0m
+[0;32mI (11741) NMEA_UDP: TX GPRMC[0m
+[0;33mW (12341) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (12751) NMEA_UDP: TX GPGGA[0m
+[0;32mI (12751) NMEA_UDP: TX GPRMC[0m
+[0;33mW (13751) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (13751) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (13761) NMEA_UDP: TX GPGGA[0m
+[0;32mI (13761) NMEA_UDP: TX GPRMC[0m
+[0;32mI (14761) NMEA_UDP: TX GPGGA[0m
+[0;32mI (14761) NMEA_UDP: TX GPRMC[0m
+[0;32mI (15761) NMEA_UDP: TX GPGGA[0m
+[0;32mI (15761) NMEA_UDP: TX GPRMC[0m
+[0;32mI (16761) NMEA_UDP: TX GPGGA[0m
+[0;32mI (16761) NMEA_UDP: TX GPRMC[0m
+[0;32mI (17761) NMEA_UDP: TX GPGGA[0m
+[0;32mI (17761) NMEA_UDP: TX GPRMC[0m
+[0;32mI (18771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (18771) NMEA_UDP: TX GPRMC[0m
+[0;33mW (19131) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (19131) NMEA_UDP: CAN err=0x00000000[0m
+[0;33mW (19131) NMEA_UDP: CAN err=0x00000000[0m
+[0;32mI (19771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (19771) NMEA_UDP: TX GPRMC[0m
+[0;33mW (20281) NMEA_UDP: CAN err=0x00000008[0m
+[0;33mW (20681) NMEA_UDP: CAN err=0x00000008[0m
+[0;32mI (20771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (20771) NMEA_UDP: TX GPRMC[0m
+[0;32mI (21771) NMEA_UDP: TX GPGGA[0m
+[0;32mI (21771) NMEA_UDP: TX GPRMC[0m

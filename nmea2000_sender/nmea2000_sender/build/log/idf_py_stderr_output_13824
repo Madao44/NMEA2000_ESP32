@@ -1,0 +1,11 @@
+Command: cmake -G Ninja -DPYTHON_DEPS_CHECKED=1 -DPYTHON=C:\Espressif\python_env\idf5.5_py3.12_env\Scripts\python.exe -DESP_PLATFORM=1 -DIDF_TARGET=esp32s3 -DCCACHE_ENABLE=1 F:\Isen\international\Stage UPC\nmea2000_sender\nmea2000_sender
+CMake Warning at C:/Espressif/frameworks/esp-idf-v5.5.4/tools/cmake/git_submodules.cmake:4 (message):
+  Git executable was not found.  Git submodule checks will not be executed.
+  If you have any build issues at all, start by adding git executable to the
+  PATH and rerun cmake to not see this warning again.
+Call Stack (most recent call first):
+  C:/Espressif/frameworks/esp-idf-v5.5.4/tools/cmake/idf.cmake:41 (include)
+  C:/Espressif/frameworks/esp-idf-v5.5.4/tools/cmake/project.cmake:29 (include)
+  CMakeLists.txt:5 (include)
+
+

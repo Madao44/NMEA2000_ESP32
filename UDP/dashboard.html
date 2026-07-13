@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NMEA2000 Live Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0a1628; color: #e0e8f0; height: 100vh; display: flex; flex-direction: column; }
+
+  header {
+    background: #0d2137;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 1px solid #1e3a5f;
+  }
+  header h1 { font-size: 1.1rem; font-weight: 600; color: #7dd3fc; }
+  .status-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #ef4444; flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  .status-dot.connected { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+  .status-label { font-size: 0.78rem; color: #94a3b8; }
+
+  .main { display: flex; flex: 1; overflow: hidden; }
+
+  /* ── Carte ── */
+  #map { flex: 1; }
+
+  /* ── Panel droit ── */
+  .panel {
+    width: 300px;
+    background: #0d2137;
+    border-left: 1px solid #1e3a5f;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .card {
+    background: #0a1e35;
+    border: 1px solid #1e3a5f;
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .card h2 {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #60a5fa;
+    margin-bottom: 10px;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 4px 0;
+    border-bottom: 1px solid #1e3a5f22;
+  }
+  .row:last-child { border-bottom: none; }
+  .lbl { font-size: 0.78rem; color: #94a3b8; }
+  .val { font-size: 1rem; font-weight: 600; color: #e0e8f0; font-variant-numeric: tabular-nums; }
+  .val.fix-ok  { color: #22c55e; }
+  .val.fix-no  { color: #ef4444; }
+  .val.big { font-size: 1.3rem; }
+
+  /* Compass */
+  .compass-wrap { display: flex; justify-content: center; margin: 8px 0; }
+  canvas#compass { display: block; }
+
+  /* NMEA raw */
+  #raw-box {
+    font-family: monospace;
+    font-size: 0.68rem;
+    color: #4ade80;
+    background: #060f1e;
+    border-radius: 6px;
+    padding: 8px;
+    max-height: 130px;
+    overflow-y: auto;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  footer {
+    padding: 6px 16px;
+    font-size: 0.7rem;
+    color: #475569;
+    border-top: 1px solid #1e3a5f;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="status-dot" id="dot"></div>
+  <h1>NMEA2000 Live Dashboard</h1>
+  <span class="status-label" id="status-label">Déconnecté</span>
+</header>
+
+<div class="main">
+  <div id="map"></div>
+
+  <div class="panel">
+
+    <!-- Fix & Position -->
+    <div class="card">
+      <h2>Position GPS</h2>
+      <div class="row"><span class="lbl">Fix</span>     <span class="val" id="v-fix">—</span></div>
+      <div class="row"><span class="lbl">Latitude</span> <span class="val" id="v-lat">—</span></div>
+      <div class="row"><span class="lbl">Longitude</span><span class="val" id="v-lon">—</span></div>
+      <div class="row"><span class="lbl">Altitude</span> <span class="val" id="v-alt">—</span></div>
+      <div class="row"><span class="lbl">Satellites</span><span class="val" id="v-svs">—</span></div>
+      <div class="row"><span class="lbl">UTC</span>      <span class="val" id="v-utc">—</span></div>
+    </div>
+
+    <!-- Mouvement -->
+    <div class="card">
+      <h2>Mouvement</h2>
+      <div class="row"><span class="lbl">SOG</span><span class="val big" id="v-sog">—</span></div>
+      <div class="row"><span class="lbl">COG</span><span class="val" id="v-cog">—</span></div>
+      <div class="row"><span class="lbl">Cap (HDG)</span><span class="val" id="v-hdg">—</span></div>
+    </div>
+
+    <!-- Boussole -->
+    <div class="card">
+      <h2>Compas</h2>
+      <div class="compass-wrap">
+        <canvas id="compass" width="120" height="120"></canvas>
+      </div>
+    </div>
+
+    <!-- Qualité -->
+    <div class="card">
+      <h2>Qualité signal</h2>
+      <div class="row"><span class="lbl">HDOP</span><span class="val" id="v-hdop">—</span></div>
+      <div class="row"><span class="lbl">VDOP</span><span class="val" id="v-vdop">—</span></div>
+    </div>
+
+    <!-- NMEA brut -->
+    <div class="card">
+      <h2>Trames NMEA brutes</h2>
+      <div id="raw-box">En attente...</div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <span>NMEA2000 → UDP → WebSocket</span>
+  <span id="last-update">—</span>
+</footer>
+
+<script>
+// ── Carte Leaflet ─────────────────────────────────────────────────────────────
+const map = L.map('map').setView([41.38, 2.17], 14);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap',
+  maxZoom: 19,
+}).addTo(map);
+
+// Icône bateau
+const boatIcon = L.divIcon({
+  html: `<svg viewBox="0 0 40 40" width="40" height="40">
+    <polygon points="20,4 34,34 20,28 6,34" fill="#3b82f6" stroke="#fff" stroke-width="1.5"/>
+  </svg>`,
+  iconSize: [40, 40],
+  iconAnchor: [20, 20],
+  className: '',
+});
+
+let marker = null;
+const trail = [];
+let polyline = L.polyline([], { color: '#3b82f6', weight: 2, opacity: 0.6 }).addTo(map);
+
+function updateMap(lat, lon, hdg) {
+  const pos = [lat, lon];
+  trail.push(pos);
+  if (trail.length > 500) trail.shift();
+  polyline.setLatLngs(trail);
+
+  if (!marker) {
+    marker = L.marker(pos, { icon: boatIcon }).addTo(map);
+    map.setView(pos, 14);
+  } else {
+    marker.setLatLng(pos);
+    // Rotation de l'icône selon le cap
+    const el = marker.getElement();
+    if (el && hdg != null) {
+      el.style.transformOrigin = '50% 50%';
+      const current = el.style.transform || '';
+      el.style.transform = current.replace(/rotate\([^)]*\)/,'') + ` rotate(${hdg}deg)`;
+    }
+  }
+}
+
+// ── Compas canvas ─────────────────────────────────────────────────────────────
+const canvas  = document.getElementById('compass');
+const ctx2d   = canvas.getContext('2d');
+let lastHdg   = 0;
+
+function drawCompass(hdg) {
+  const cx = 60, cy = 60, r = 54;
+  ctx2d.clearRect(0, 0, 120, 120);
+
+  // Fond
+  ctx2d.beginPath();
+  ctx2d.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx2d.fillStyle = '#060f1e';
+  ctx2d.fill();
+  ctx2d.strokeStyle = '#1e3a5f';
+  ctx2d.lineWidth = 2;
+  ctx2d.stroke();
+
+  // Points cardinaux
+  const cards = ['N','E','S','O'];
+  ctx2d.fillStyle = '#60a5fa';
+  ctx2d.font = 'bold 11px Segoe UI';
+  ctx2d.textAlign = 'center';
+  ctx2d.textBaseline = 'middle';
+  cards.forEach((c, i) => {
+    const a = (i * 90 - 90) * Math.PI / 180;
+    ctx2d.fillText(c, cx + (r-14)*Math.cos(a), cy + (r-14)*Math.sin(a));
+  });
+
+  // Aiguille
+  const a = (hdg - 90) * Math.PI / 180;
+  ctx2d.beginPath();
+  ctx2d.moveTo(cx + r*0.6*Math.cos(a), cy + r*0.6*Math.sin(a));
+  ctx2d.lineTo(cx + r*0.15*Math.cos(a+Math.PI*0.85), cy + r*0.15*Math.sin(a+Math.PI*0.85));
+  ctx2d.lineTo(cx + r*0.15*Math.cos(a-Math.PI*0.85), cy + r*0.15*Math.sin(a-Math.PI*0.85));
+  ctx2d.closePath();
+  ctx2d.fillStyle = '#3b82f6';
+  ctx2d.fill();
+
+  // Centre
+  ctx2d.beginPath();
+  ctx2d.arc(cx, cy, 5, 0, Math.PI*2);
+  ctx2d.fillStyle = '#e0e8f0';
+  ctx2d.fill();
+
+  // Valeur
+  ctx2d.fillStyle = '#e0e8f0';
+  ctx2d.font = 'bold 13px Segoe UI';
+  ctx2d.fillText(`${Math.round(hdg)}°`, cx, cy + r - 14);
+}
+drawCompass(0);
+
+// ── WebSocket ─────────────────────────────────────────────────────────────────
+const WS_URL = `ws://localhost:8765`;
+let ws, reconnTimer;
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val ?? '—';
+}
+
+function connect() {
+  ws = new WebSocket(WS_URL);
+
+  ws.onopen = () => {
+    document.getElementById('dot').classList.add('connected');
+    document.getElementById('status-label').textContent = 'Connecté';
+    clearTimeout(reconnTimer);
+  };
+
+  ws.onclose = () => {
+    document.getElementById('dot').classList.remove('connected');
+    document.getElementById('status-label').textContent = 'Reconnexion...';
+    reconnTimer = setTimeout(connect, 2000);
+  };
+
+  ws.onmessage = (evt) => {
+    const msg = JSON.parse(evt.data);
+    if (msg.type !== 'gps') return;
+    const d = msg.data;
+
+    // Fix
+    const fixEl = document.getElementById('v-fix');
+    if (fixEl) {
+      fixEl.textContent = d.fix ? 'OUI ✓' : 'NON ✗';
+      fixEl.className   = 'val ' + (d.fix ? 'fix-ok' : 'fix-no');
+    }
+
+    // Position
+    setText('v-lat', d.lat != null ? d.lat.toFixed(6) + '°' : null);
+    setText('v-lon', d.lon != null ? d.lon.toFixed(6) + '°' : null);
+    setText('v-alt', d.alt != null ? d.alt.toFixed(1) + ' m' : null);
+    setText('v-svs', d.num_svs ?? null);
+    setText('v-utc', d.utc ?? null);
+
+    // Mouvement
+    setText('v-sog', d.sog != null ? d.sog.toFixed(2) + ' kn' : null);
+    setText('v-cog', d.cog != null ? d.cog.toFixed(1) + '°' : null);
+    setText('v-hdg', d.hdg != null ? d.hdg.toFixed(1) + '°' : null);
+
+    // Qualité
+    setText('v-hdop', d.hdop != null ? d.hdop.toFixed(2) : null);
+    setText('v-vdop', d.vdop != null ? d.vdop.toFixed(2) : null);
+
+    // Carte
+    if (d.lat && d.lon) updateMap(d.lat, d.lon, d.hdg ?? d.cog ?? 0);
+
+    // Compas
+    const hdg = d.hdg ?? d.cog ?? lastHdg;
+    lastHdg = hdg;
+    drawCompass(hdg);
+
+    // Trames brutes
+    if (d.sentences && d.sentences.length) {
+      document.getElementById('raw-box').textContent =
+        d.sentences.slice(-8).join('\n');
+    }
+
+    // Timestamp
+    setText('last-update', 'Mise à jour : ' + new Date().toLocaleTimeString());
+  };
+}
+
+connect();
+</script>
+</body>
+</html>

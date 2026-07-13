@@ -1,0 +1,24 @@
+Command: C:\Espressif\python_env\idf5.5_py3.12_env\Scripts\python.exe C:\Espressif\frameworks\esp-idf-v5.5.4\tools/idf_monitor.py -p COM4 -b 115200 --toolchain-prefix xtensa-esp32s3-elf- --target esp32s3 --revision 0 F:\Isen\international\Stage UPC\nmea2000_sender\nmea2000_sender\build\nmea2000_sender.elf F:\Isen\international\Stage UPC\nmea2000_sender\nmea2000_sender\build\bootloader\bootloader.elf --force-color -m 'C:\Espressif\python_env\idf5.5_py3.12_env\Scripts\python.exe' 'C:\Espressif\frameworks\esp-idf-v5.5.4\tools\idf.py' '-p' 'COM4'
+[0;33m--- Warning: GDB cannot open serial ports accessed as COMx[0m
+[0;33m--- Using \\.\COM4 instead...[0m
+[0;33m--- esp-idf-monitor 1.9.0 on \\.\COM4 115200[0m
+[0;33m--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H[0m
+[0m--- 0x403c8700: [0;33m_stext[0m[0m at [0;32m??[0m[0m:[1;31m?[0m
+[0m--- 0x403c8924: [0;33mcall_start_cpu0[0m[0m at [0;32mC:/Espressif/frameworks/esp-idf-v5.5.4/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m27[0m
+[0m--- 0x4200efe9: [0;33mtwai_ll_format_frame_buffer[0m[0m at [0;32mC:/Espressif/frameworks/esp-idf-v5.5.4/components/hal/esp32s3/include/hal/twai_ll.h[0m[0m:[1;31m700[0m
+[0m--- (inlined by) [0;33mtwai_hal_format_frame[0m[0m at [0;32mC:/Espressif/frameworks/esp-idf-v5.5.4/components/hal/twai_hal_v1.c[0m[0m:[1;31m380[0m
+[0m--- 0x400570e8: [0;33mmemset[0m[0m in [0;32mROM[0m
+[0m--- 0x400570f3: [0;33mmemset[0m[0m in [0;32mROM[0m
+[0m--- 0x4200efe6: [0;33mtwai_ll_format_frame_buffer[0m[0m at [0;32mC:/Espressif/frameworks/esp-idf-v5.5.4/components/hal/esp32s3/include/hal/twai_ll.h[0m[0m:[1;31m700[0m
+[0m--- (inlined by) [0;33mtwai_hal_format_frame[0m[0m at [0;32mC:/Espressif/frameworks/esp-idf-v5.5.4/components/hal/twai_hal_v1.c[0m[0m:[1;31m380[0m
+[0m--- 0x4200cf6a: [0;33m_node_start_trans[0m[0m at [0;32mC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_twai/esp_twai_onchip.c[0m[0m:[1;31m195[0m
+[0m--- 0x4200dbc4: [0;33m_node_isr_main[0m[0m at [0;32mC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_twai/esp_twai_onchip.c[0m[0m:[1;31m290[0m
+[0m--- 0x40376e49: [0;33m_xt_lowint1[0m[0m at [0;32mC:/Espressif/frameworks/esp-idf-v5.5.4/components/xtensa/xtensa_vectors.S[0m[0m:[1;31m1240[0m
+[0m--- 0x42009f81: [0;33msend_fast_packet[0m[0m at [0;32mF:/Isen/international/Stage UPC/nmea2000_sender/nmea2000_sender/main/nmea2000_sender.c[0m[0m:[1;31m107[0m
+[0m--- 0x4200a2cb: [0;33mapp_main[0m[0m at [0;32mF:/Isen/international/Stage UPC/nmea2000_sender/nmea2000_sender/main/nmea2000_sender.c[0m[0m:[1;31m326[0m
+[0m--- 0x4201758c: [0;33mmain_task[0m[0m at [0;32mC:/Espressif/frameworks/esp-idf-v5.5.4/components/freertos/app_startup.c[0m[0m:[1;31m208[0m
+[0m--- 0x4037a23d: [0;33mvPortTaskWrapper[0m[0m at [0;32mC:/Espressif/frameworks/esp-idf-v5.5.4/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c[0m[0m:[1;31m139[0m
+[0m--- 0x403796f4: [0;33mesp_restart_noos[0m[0m at [0;32mC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_system/port/soc/esp32s3/system_internal.c[0m[0m:[1;31m164[0m
+[0m--- 0x403c8700: [0;33m_stext[0m[0m at [0;32m??[0m[0m:[1;31m?[0m
+[0m--- 0x403c8924: [0;33mcall_start_cpu0[0m[0m at [0;32mC:/Espressif/frameworks/esp-idf-v5.5.4/components/bootloader/subproject/main/bootloader_start.c[0m[0m:[1;31m27[0m
+[0m

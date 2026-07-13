@@ -1,0 +1,165 @@
+Command: ninja all
+[1/9] Performing build step for 'bootloader'
+[1/1] C:\Windows\system32\cmd.exe /C "cd /D "F:\Isen\international\Stage UPC\nmea2000_ap\build\bootloader\esp-idf\esptool_py" && C:\Espressif\python_env\idf5.5_py3.12_env\Scripts\python.exe C:/Espressif/frameworks/esp-idf-v5.5.4/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 "F:/Isen/international/Stage UPC/nmea2000_ap/build/bootloader/bootloader.bin""
+Bootloader binary size 0x5160 bytes. 0x2ea0 bytes (36%) free.
+[2/9] No install step for 'bootloader'
+[3/9] Completed 'bootloader'
+[4/9] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/nmea2000_ap.c.obj
+FAILED: esp-idf/main/CMakeFiles/__idf_main.dir/nmea2000_ap.c.obj 
+ccache C:\Espressif\tools\xtensa-esp-elf\esp-14.2.0_20260121\xtensa-esp-elf\bin\xtensa-esp32s3-elf-gcc.exe -DESP_PLATFORM -DIDF_VER=\"GIT-NOTFOUND\" -DSOC_MMU_PAGE_SIZE=CONFIG_MMU_PAGE_SIZE -DSOC_XTAL_FREQ_MHZ=CONFIG_XTAL_FREQ -D_GLIBCXX_HAVE_POSIX_SEMAPHORE -D_GLIBCXX_USE_POSIX_SEMAPHORE -D_GNU_SOURCE -D_POSIX_READER_WRITER_LOCKS -I"F:/Isen/international/Stage UPC/nmea2000_ap/build/config" -I"F:/Isen/international/Stage UPC/nmea2000_ap/main" -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/newlib/platform_include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/freertos/config/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/freertos/config/include/freertos -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/freertos/config/xtensa/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/freertos/FreeRTOS-Kernel/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/freertos/FreeRTOS-Kernel/portable/xtensa/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/freertos/FreeRTOS-Kernel/portable/xtensa/include/freertos -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/freertos/esp_additions/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/include/soc -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/include/soc/esp32s3 -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/dma/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/ldo/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/debug_probe/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/mspi_timing_tuning/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/mspi_timing_tuning/tuning_scheme_impl/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/power_supply/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/port/esp32s3/. -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/port/esp32s3/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/mspi_timing_tuning/port/esp32s3/. -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_hw_support/mspi_timing_tuning/port/esp32s3/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/heap/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/heap/tlsf -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/log/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/soc/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/soc/esp32s3 -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/soc/esp32s3/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/soc/esp32s3/register -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/hal/platform_port/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/hal/esp32s3/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/hal/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_rom/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_rom/esp32s3/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_rom/esp32s3/include/esp32s3 -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_rom/esp32s3 -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_common/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_system/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_system/port/soc -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_system/port/include/private -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/xtensa/esp32s3/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/xtensa/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/xtensa/deprecated_include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/lwip/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/lwip/include/apps -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/lwip/include/apps/sntp -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/lwip/lwip/src/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/lwip/port/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/lwip/port/freertos/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/lwip/port/esp32xx/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/lwip/port/esp32xx/include/arch -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/lwip/port/esp32xx/include/sys -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_http_server/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/http_parser -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_event/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/nvs_flash/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_partition/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_wifi/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_wifi/include/local -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_wifi/wifi_apps/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_wifi/wifi_apps/nan_app/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_phy/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_phy/esp32s3/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_netif/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/driver/deprecated -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/driver/i2c/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/driver/touch_sensor/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/driver/twai/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/driver/touch_sensor/esp32s3/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_pm/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_ringbuf/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_gpio/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_pcnt/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_gptimer/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_spi/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_mcpwm/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_ana_cmpr/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_i2s/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_sdmmc/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/sdmmc/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_sdspi/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_sdio/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_dac/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_rmt/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_tsens/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_sdm/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_i2c/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_uart/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/vfs/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_ledc/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_parlio/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_usb_serial_jtag/include -IC:/Espressif/frameworks/esp-idf-v5.5.4/components/esp_driver_twai/include @"F:/Isen/international/Stage UPC/nmea2000_ap/build/toolchain/cflags" -fdiagnostics-color=always -ffunction-sections -fdata-sections -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-variable -Wno-error=unused-but-set-variable -Wno-error=deprecated-declarations -Wextra -Wno-error=extra -Wno-unused-parameter -Wno-sign-compare -Wno-enum-conversion -gdwarf-4 -ggdb -Og -fno-shrink-wrap "-fmacro-prefix-map=F:/Isen/international/Stage UPC/nmea2000_ap=." -fmacro-prefix-map=C:/Espressif/frameworks/esp-idf-v5.5.4=/IDF -fstrict-volatile-bitfields -fno-jump-tables -fno-tree-switch-conversion -std=gnu17 -Wno-old-style-declaration -MD -MT esp-idf/main/CMakeFiles/__idf_main.dir/nmea2000_ap.c.obj -MF esp-idf\main\CMakeFiles\__idf_main.dir\nmea2000_ap.c.obj.d -o esp-idf/main/CMakeFiles/__idf_main.dir/nmea2000_ap.c.obj -c "F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c"
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c: In function 'decode_cog_sog':
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:189:5: error: case label not within a switch statement
+  189 |     case PGN_COG_SOG:
+      |     ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:190:20: error: 'payload' undeclared (first use in this function)
+  190 |     decode_cog_sog(payload, plen);
+      |                    ^~~~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:190:20: note: each undeclared identifier is reported only once for each function it appears in
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:190:29: error: 'plen' undeclared (first use in this function)
+  190 |     decode_cog_sog(payload, plen);
+      |                             ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:192:5: error: break statement not within loop or switch
+  192 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:193:1: error: case label not within a switch statement
+  193 | case PGN_VESSEL_HEADING:
+      | ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:194:5: error: implicit declaration of function 'decode_heading' [-Wimplicit-function-declaration]
+  194 |     decode_heading(payload, plen);
+      |     ^~~~~~~~~~~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:196:5: error: break statement not within loop or switch
+  196 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:197:1: error: case label not within a switch statement
+  197 | case PGN_GNSS_POSITION:
+      | ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:198:5: error: implicit declaration of function 'decode_position' [-Wimplicit-function-declaration]
+  198 |     decode_position(payload, plen);
+      |     ^~~~~~~~~~~~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:200:5: error: break statement not within loop or switch
+  200 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c: At top level:
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:202:13: warning: conflicting types for 'decode_heading'; have 'void(const uint8_t *, uint8_t)' {aka 'void(const unsigned char *, unsigned char)'}
+  202 | static void decode_heading(const uint8_t *d, uint8_t l) {
+      |             ^~~~~~~~~~~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:202:13: error: static declaration of 'decode_heading' follows non-static declaration
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:194:5: note: previous implicit declaration of 'decode_heading' with type 'void(const uint8_t *, uint8_t)' {aka 'void(const unsigned char *, unsigned char)'}
+  194 |     decode_heading(payload, plen);
+      |     ^~~~~~~~~~~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c: In function 'decode_heading':
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:208:5: error: case label not within a switch statement
+  208 |     case PGN_COG_SOG:
+      |     ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:209:20: error: 'payload' undeclared (first use in this function)
+  209 |     decode_cog_sog(payload, plen);
+      |                    ^~~~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:209:29: error: 'plen' undeclared (first use in this function)
+  209 |     decode_cog_sog(payload, plen);
+      |                             ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:211:5: error: break statement not within loop or switch
+  211 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:212:1: error: case label not within a switch statement
+  212 | case PGN_VESSEL_HEADING:
+      | ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:215:5: error: break statement not within loop or switch
+  215 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:216:1: error: case label not within a switch statement
+  216 | case PGN_GNSS_POSITION:
+      | ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:219:5: error: break statement not within loop or switch
+  219 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c: In function 'decode_dops':
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:228:5: error: case label not within a switch statement
+  228 |     case PGN_COG_SOG:
+      |     ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:229:20: error: 'payload' undeclared (first use in this function)
+  229 |     decode_cog_sog(payload, plen);
+      |                    ^~~~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:229:29: error: 'plen' undeclared (first use in this function)
+  229 |     decode_cog_sog(payload, plen);
+      |                             ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:231:5: error: break statement not within loop or switch
+  231 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:232:1: error: case label not within a switch statement
+  232 | case PGN_VESSEL_HEADING:
+      | ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:235:5: error: break statement not within loop or switch
+  235 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:236:1: error: case label not within a switch statement
+  236 | case PGN_GNSS_POSITION:
+      | ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:239:5: error: break statement not within loop or switch
+  239 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c: At top level:
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:241:13: warning: conflicting types for 'decode_position'; have 'void(const uint8_t *, uint8_t)' {aka 'void(const unsigned char *, unsigned char)'}
+  241 | static void decode_position(const uint8_t *d, uint8_t l) {
+      |             ^~~~~~~~~~~~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:241:13: error: static declaration of 'decode_position' follows non-static declaration
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:198:5: note: previous implicit declaration of 'decode_position' with type 'void(const uint8_t *, uint8_t)' {aka 'void(const unsigned char *, unsigned char)'}
+  198 |     decode_position(payload, plen);
+      |     ^~~~~~~~~~~~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c: In function 'decode_position':
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:252:5: error: case label not within a switch statement
+  252 |     case PGN_COG_SOG:
+      |     ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:253:20: error: 'payload' undeclared (first use in this function)
+  253 |     decode_cog_sog(payload, plen);
+      |                    ^~~~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:253:29: error: 'plen' undeclared (first use in this function)
+  253 |     decode_cog_sog(payload, plen);
+      |                             ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:255:5: error: break statement not within loop or switch
+  255 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:256:1: error: case label not within a switch statement
+  256 | case PGN_VESSEL_HEADING:
+      | ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:259:5: error: break statement not within loop or switch
+  259 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:260:1: error: case label not within a switch statement
+  260 | case PGN_GNSS_POSITION:
+      | ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:263:5: error: break statement not within loop or switch
+  263 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c: In function 'decode_time':
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:274:5: error: case label not within a switch statement
+  274 |     case PGN_COG_SOG:
+      |     ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:275:20: error: 'payload' undeclared (first use in this function)
+  275 |     decode_cog_sog(payload, plen);
+      |                    ^~~~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:275:29: error: 'plen' undeclared (first use in this function)
+  275 |     decode_cog_sog(payload, plen);
+      |                             ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:277:5: error: break statement not within loop or switch
+  277 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:278:1: error: case label not within a switch statement
+  278 | case PGN_VESSEL_HEADING:
+      | ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:281:5: error: break statement not within loop or switch
+  281 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:282:1: error: case label not within a switch statement
+  282 | case PGN_GNSS_POSITION:
+      | ^~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:285:5: error: break statement not within loop or switch
+  285 |     break;
+      |     ^~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c: In function 'app_main':
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:612:13: error: multiple default labels in one switch
+  612 |             default: break;
+      |             ^~~~~~~
+F:/Isen/international/Stage UPC/nmea2000_ap/main/nmea2000_ap.c:601:13: note: this is the first default label
+  601 |             default:
+      |             ^~~~~~~
+ninja: build stopped: subcommand failed.
