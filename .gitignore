@@ -71,3 +71,6 @@ __pycache__/
 *.tiff
 *.ico
 *.svg
+
+# PDF
+*.pdf
