@@ -1,14 +1,14 @@
 # NMEA2000 ESP32
 
-Pipeline de collecte de données NMEA2000 d'un bateau vers une base de données distante (OGC SensorThings API), avec dashboard web local temps réel. Projet réalisé dans le cadre d'un stage international à l'**OBSEA / UPC SARTI** (Vilanova i la Geltrú, Espagne).
+Pipeline for collecting NMEA2000 data from a boat to a remote database (OGC SensorThings API), with a local real-time web dashboard. Project carried out as part of an international internship at **OBSEA / UPC SARTI** (Vilanova i la Geltrú, Spain).
 
 ![status](https://img.shields.io/badge/status-production-brightgreen)
 
-## Aperçu
+## Overview
 
-Un ESP32-S3 lit le bus NMEA2000 du bateau (GPS, AIS, moteur, profondeur/vitesse) via CAN, publie les données en MQTT/HTTP vers un serveur **FROST-Server** (OGC SensorThings API) et sert un dashboard web local pour le monitoring en direct.
+An ESP32-S3 reads the boat's NMEA2000 bus (GPS, AIS, engine, depth/speed) via CAN, publishes data over MQTT/HTTP to a **FROST-Server** (OGC SensorThings API), and serves a local web dashboard for live monitoring.
 
-Deux contextes de test : `Mar de Caroba` (dev/labo) et `Sei Whale` (déploiement production).
+Two test contexts: `Mar de Caroba` (dev/lab) and `Sei Whale` (production deployment).
 
 ## Architecture
 
@@ -19,87 +19,87 @@ NMEA2000 bus (CAN 250kbps)
         │
      ESP32-S3  ──Wi-Fi (4G router)──▶  FROST-Server (Docker, PostgreSQL/PostGIS)
         │                                     https://nmea2k.obsea.es/FROST-Server/v1.1/
-        └──▶ Dashboard local (http://192.168.4.1)
+        └──▶ Local dashboard (http://192.168.4.1)
 ```
 
 ## Hardware
 
-| Composant | Référence |
+| Component | Reference |
 |---|---|
-| Microcontrôleur | ESP32-S3 |
-| Transceiver CAN | SN65HVD230 (RS→GND pour mode 250 kbps) |
+| Microcontroller | ESP32-S3 |
+| CAN transceiver | SN65HVD230 (RS→GND for 250 kbps mode) |
 | GPS | Sportnav SPO25F |
 | AIS | em-trak B921 |
-| Moteur | SELVA outboard (display DLC-Plus) |
-| Profondeur/vitesse | KTD-TM520 |
-| Connectivité | D-Link DWR-960 (routeur 4G, 2.4 GHz) |
+| Engine | SELVA outboard (DLC-Plus display) |
+| Depth/speed | KTD-TM520 |
+| Connectivity | D-Link DWR-960 (4G router, 2.4 GHz) |
 
-Câblage NMEA2000 (connecteur M12 5 broches, code A) :
+NMEA2000 wiring (M12 5-pin connector, code A):
 
-| Pin | Fonction |
+| Pin | Function |
 |---|---|
 | 1 | Shield |
-| 2 | V+ (rouge) |
-| 3 | GND (noir) |
-| 4 | CAN H (blanc) |
-| 5 | CAN L (bleu) |
+| 2 | V+ (red) |
+| 3 | GND (black) |
+| 4 | CAN H (white) |
+| 5 | CAN L (blue) |
 
-> V+ non connecté si les composants ont leur propre alimentation. GND obligatoire (référence de tension commune). Isolation galvanique recommandée.
+> V+ not connected if the components have their own power supply. GND mandatory (common voltage reference). Galvanic isolation recommended.
 
-## Stack logicielle
+## Software stack
 
-- **Firmware** : ESP-IDF v5.5.4, driver TWAI, lib [ttlappalainen/NMEA2000_esp32](https://github.com/ttlappalainen/NMEA2000_esp32), PubSubClient (MQTT), ArduinoJson
-- **Backend** : FROST-Server (OGC SensorThings API v1.1), Docker Compose, PostgreSQL/PostGIS, Apache2 reverse proxy
+- **Firmware**: ESP-IDF v5.5.4, TWAI driver, [ttlappalainen/NMEA2000_esp32](https://github.com/ttlappalainen/NMEA2000_esp32) lib, PubSubClient (MQTT), ArduinoJson
+- **Backend**: FROST-Server (OGC SensorThings API v1.1), Docker Compose, PostgreSQL/PostGIS, Apache2 reverse proxy
 
 ## Build & flash
 
 ```bash
-# Environnement : ESP-IDF v5.5.4
+# Environment: ESP-IDF v5.5.4
 idf.py set-target esp32s3
 idf.py build
 idf.py -p COMx flash monitor
 ```
 
-## Dashboard local
+## Local dashboard
 
-Se connecter au Wi-Fi émis par l'ESP32 :
+Connect to the Wi-Fi broadcast by the ESP32:
 
-- SSID : `NMEA2000`
-- URL : `http://192.168.4.1`
+- SSID: `NMEA2000`
+- URL: `http://192.168.4.1`
 
-Affiche GPS, cap, paramètres moteur et cibles AIS en temps réel.
+Displays GPS, heading, engine parameters, and AIS targets in real time.
 
-## PGN NMEA2000 supportés
+## Supported NMEA2000 PGNs
 
-| PGN | Donnée | Type |
+| PGN | Data | Type |
 |---|---|---|
 | 129025 | Position Rapid Update (lat/lon) | standard frame |
 | 129026 | COG/SOG | standard frame |
-| 129029 | GNSS complet | fast-packet |
-| 129033 | Date/heure GPS | standard frame (non fiable → fallback NTP) |
-| 129039 | Cible AIS (em-trak B921) | fast-packet, format binaire natif |
-| 129540 / 126992 | Satellites GNSS / heure système | — |
+| 129029 | Full GNSS | fast-packet |
+| 129033 | GPS date/time | standard frame (unreliable → NTP fallback) |
+| 129039 | AIS target (em-trak B921) | fast-packet, native binary format |
+| 129540 / 126992 | GNSS satellites / system time | — |
 
-> Le moteur SELVA n'est pas raccordé au bus NMEA2000 sur ce bateau : aucun PGN moteur (1274xx/1275xx) n'est émis. Seul le GPS (src=0x15) est source active. Une passerelle moteur→NMEA2000 serait nécessaire pour exploiter ces données.
+> The SELVA engine is not connected to the NMEA2000 bus on this boat: no engine PGN (1274xx/1275xx) is emitted. Only the GPS (src=0x15) is an active source. An engine→NMEA2000 gateway would be needed to make use of this data.
 
-## Déploiement serveur (FROST-Server)
+## Server deployment (FROST-Server)
 
 ```bash
 docker compose up -d
 ```
 
-- Bootstrap de l'entity graph (`Thing`, `Sensor`, `ObservedProperty`, `Datastream`, `Location`) via HTTP REST (curl) — MQTT ne peut créer que des `Observations`.
-- Le port Docker doit être bindé en `0.0.0.0:8080` (pas `127.0.0.1`) pour que le reverse proxy Apache route correctement.
+- Bootstrap the entity graph (`Thing`, `Sensor`, `ObservedProperty`, `Datastream`, `Location`) via HTTP REST (curl) — MQTT can only create `Observations`.
+- The Docker port must be bound to `0.0.0.0:8080` (not `127.0.0.1`) for the Apache reverse proxy to route correctly.
 
-## Repos liés
+## Related repos
 
-- [`Madao44/NMEA2000_ESP32`](https://github.com/Madao44/NMEA2000_ESP32) — firmware ESP32
-- [`Madao44/UPC_SARTI`](https://github.com/Madao44/UPC_SARTI) — infra serveur / bootstrap
+- [`Madao44/NMEA2000_ESP32`](https://github.com/Madao44/NMEA2000_ESP32) — ESP32 firmware
+- [`Madao44/UPC_SARTI`](https://github.com/Madao44/UPC_SARTI) — server infrastructure / bootstrap
 
-## Auteur
+## Author
 
-Nathan — stage international ISEN Brest (Yncréa) x OBSEA/UPC SARTI
+Nathan — international internship ISEN Brest (Yncréa) x OBSEA/UPC SARTI
 
-## Licence
+## License
 
 MIT
