@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sei Whale — History</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B1929; --panel-2:#0E1D30; --line:#24405c;
+  --text:#DCE6EE; --text-dim:#7d94a8;
+  --teal:#2A9D8F; --brass:#C99A4A; --red:#d9645a;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:radial-gradient(ellipse at 20% -10%, #142c46 0%, transparent 55%), var(--bg);
+  color:var(--text); font-family:'Space Grotesk',sans-serif; min-height:100vh;
+}
+::selection{background:var(--brass);color:#0B1929}
+a{color:var(--teal)}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{
+  outline:2px solid var(--brass);outline-offset:2px}
+
+header{
+  display:flex;align-items:baseline;gap:18px;padding:22px 28px 18px;
+  border-bottom:1px solid var(--line);flex-wrap:wrap;
+}
+header h1{font-size:1.35rem;font-weight:700;margin:0}
+header .sub{color:var(--text-dim);font-size:.85rem}
+header nav{margin-left:auto;font-size:.85rem}
+header nav a{margin-left:16px;text-decoration:none}
+header nav a.current{color:var(--text);border-bottom:2px solid var(--brass);padding-bottom:2px}
+
+.controls{
+  display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;
+  padding:18px 28px;border-bottom:1px solid var(--line);
+}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:.75rem;color:var(--text-dim)}
+select,input[type=datetime-local]{
+  background:var(--panel-2);color:var(--text);
+  border:1px solid var(--line);padding:7px 9px;
+  font-family:'IBM Plex Mono',monospace;font-size:.82rem;
+}
+button{
+  background:var(--brass);color:#0B1929;border:none;
+  padding:8px 18px;font-family:'Space Grotesk',sans-serif;
+  font-weight:600;font-size:.85rem;cursor:pointer;
+}
+button:hover{background:#d8ab5d}
+button.ghost{background:transparent;color:var(--teal);border:1px solid var(--line)}
+button.ghost:hover{background:var(--panel-2)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.meta{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--text-dim)}
+
+#map{height:min(50vh,440px);background:var(--panel-2);border-bottom:1px solid var(--line)}
+.leaflet-container{background:var(--panel-2)!important;font-family:'IBM Plex Mono',monospace}
+
+section{padding:22px 28px}
+section h2{
+  font-variant:small-caps;font-size:.95rem;font-weight:600;color:var(--text-dim);
+  margin:0 0 14px;border-bottom:1px solid var(--line);padding-bottom:6px;
+}
+.chart-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:24px}
+.chart-card .t{font-size:.85rem;margin-bottom:6px}
+.chart-card .t span{color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:.75rem}
+.chart-wrap{height:170px}
+
+table{width:100%;border-collapse:collapse;font-family:'IBM Plex Mono',monospace;font-size:.76rem}
+th,td{padding:6px 10px;text-align:right;border-bottom:1px solid rgba(36,64,92,.5);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--text-dim);font-weight:500;position:sticky;top:0;background:var(--bg)}
+.table-wrap{max-height:340px;overflow:auto;border:1px solid var(--line)}
+
+.notice{
+  padding:12px 16px;margin:0 28px 18px;border:1px solid var(--line);
+  color:var(--text-dim);font-size:.85rem;
+}
+.notice.error{border-color:var(--red);color:var(--red);font-family:'IBM Plex Mono',monospace}
+.hidden{display:none}
+.spinner{color:var(--brass)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Sei Whale</h1>
+  <span class="sub">Recorded history</span>
+  <nav>
+    <a href="/">Live</a>
+    <a href="/history.html" class="current">History</a>
+  </nav>
+</header>
+
+<div class="controls">
+  <div class="field">
+    <label for="range">Time range</label>
+    <select id="range">
+      <option value="1">Last hour</option>
+      <option value="6" selected>Last 6 hours</option>
+      <option value="24">Last 24 hours</option>
+      <option value="168">Last 7 days</option>
+      <option value="custom">Custom…</option>
+    </select>
+  </div>
+  <div class="field hidden" id="fromField">
+    <label for="from">From (UTC)</label>
+    <input type="datetime-local" id="from">
+  </div>
+  <div class="field hidden" id="toField">
+    <label for="to">To (UTC)</label>
+    <input type="datetime-local" id="to">
+  </div>
+  <button id="loadBtn">Load data</button>
+  <button id="csvBtn" class="ghost" disabled>Download CSV</button>
+  <span class="meta" id="meta"></span>
+</div>
+
+<div class="notice" id="notice">Choose a time range and load the data.</div>
+
+<div id="map"></div>
+
+<section>
+  <h2>Measurements over time</h2>
+  <div class="chart-grid" id="chartGrid"></div>
+</section>
+
+<section>
+  <h2>Raw readings</h2>
+  <div class="table-wrap">
+    <table id="dataTable">
+      <thead><tr id="tableHead"></tr></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+const API = "/FROST-Server/v1.1";
+const MAX_POINTS = 3000;       /* safety cap per variable */
+
+/* Datastream id -> label, unit, chart colour */
+const SERIES = [
+  {id:1,  key:"Latitude",           unit:"deg", color:"#C99A4A", chart:false},
+  {id:2,  key:"Longitude",          unit:"deg", color:"#C99A4A", chart:false},
+  {id:3,  key:"SpeedOverGround",    unit:"kn",  color:"#2A9D8F", chart:true},
+  {id:4,  key:"CourseOverGround",   unit:"deg", color:"#6aa9c9", chart:true},
+  {id:5,  key:"Heading",            unit:"deg", color:"#8b9dc3", chart:true},
+  {id:6,  key:"HDOP",               unit:"",    color:"#9c8fc4", chart:true},
+  {id:7,  key:"EngineRPM",          unit:"rpm", color:"#C99A4A", chart:true},
+  {id:8,  key:"CoolantTemperature", unit:"C",   color:"#d9645a", chart:true},
+  {id:9,  key:"OilPressure",        unit:"bar", color:"#e0a458", chart:true},
+  {id:10, key:"OilTemperature",     unit:"C",   color:"#d98b5a", chart:true},
+  {id:11, key:"BatteryVoltage",     unit:"V",   color:"#7fc4a8", chart:true},
+  {id:12, key:"FuelLevel",          unit:"%",   color:"#b5c99a", chart:true},
+  {id:13, key:"WaterDepth",         unit:"m",   color:"#5a9fd9", chart:true},
+  {id:14, key:"WaterTemperature",   unit:"C",   color:"#6ac9c0", chart:true},
+  {id:15, key:"SpeedThroughWater",  unit:"kn",  color:"#4a8fa8", chart:true},
+];
+
+const el = id => document.getElementById(id);
+const charts = {};
+let lastRows = [];
+
+/* ---- map ---- */
+const map = L.map('map').setView([41.2143,1.7308], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {maxZoom:19, attribution:'&copy; OpenStreetMap'}).addTo(map);
+let trackLayer = L.layerGroup().addTo(map);
+
+/* ---- range controls ---- */
+el('range').addEventListener('change', e => {
+  const custom = e.target.value === 'custom';
+  el('fromField').classList.toggle('hidden', !custom);
+  el('toField').classList.toggle('hidden', !custom);
+  if (custom && !el('from').value){
+    const now = new Date();
+    const back = new Date(now.getTime() - 6*3600*1000);
+    el('to').value   = now.toISOString().slice(0,16);
+    el('from').value = back.toISOString().slice(0,16);
+  }
+});
+
+function getWindow(){
+  const v = el('range').value;
+  if (v === 'custom'){
+    const f = el('from').value, t = el('to').value;
+    if (!f || !t) throw new Error('Pick both a start and an end date.');
+    return {from:new Date(f+'Z'), to:new Date(t+'Z')};
+  }
+  const to = new Date();
+  return {from:new Date(to.getTime() - (+v)*3600*1000), to};
+}
+
+function setNotice(msg, isError){
+  const n = el('notice');
+  n.textContent = msg;
+  n.className = 'notice' + (isError ? ' error' : '');
+  n.classList.remove('hidden');
+}
+
+/* Fetch one datastream over a window, following pagination up to MAX_POINTS */
+async function fetchSeries(dsId, from, to){
+  const filter = encodeURIComponent(
+    `phenomenonTime ge ${from.toISOString()} and phenomenonTime le ${to.toISOString()}`);
+  let url = `${API}/Datastreams(${dsId})/Observations`
+          + `?$filter=${filter}&$orderby=phenomenonTime%20asc`
+          + `&$top=1000&$select=phenomenonTime,result`;
+  const out = [];
+  while (url && out.length < MAX_POINTS){
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Datastream ${dsId}: server returned ${res.status}`);
+    const data = await res.json();
+    out.push(...data.value);
+    url = data['@iot.nextLink'] || null;
+    if (url && url.startsWith('http')) url = url.replace(/^https?:\/\/[^/]+/, '');
+  }
+  return out.slice(0, MAX_POINTS);
+}
+
+/* Downsample so charts stay responsive */
+function thin(rows, maxN){
+  if (rows.length <= maxN) return rows;
+  const step = Math.ceil(rows.length / maxN);
+  return rows.filter((_, i) => i % step === 0);
+}
+
+function drawChart(s, rows){
+  const wrapId = 'c-' + s.key;
+  let canvas = document.getElementById(wrapId);
+  if (!canvas){
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `<div class="t">${s.key} <span>${s.unit||''}</span></div>
+                      <div class="chart-wrap"><canvas id="${wrapId}"></canvas></div>`;
+    el('chartGrid').appendChild(card);
+    canvas = document.getElementById(wrapId);
+  }
+  const pts = thin(rows, 400);
+  const labels = pts.map(r => new Date(r.phenomenonTime)
+    .toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}));
+  const values = pts.map(r => r.result);
+
+  if (charts[s.key]){
+    charts[s.key].data.labels = labels;
+    charts[s.key].data.datasets[0].data = values;
+    charts[s.key].update();
+    return;
+  }
+  charts[s.key] = new Chart(canvas, {
+    type:'line',
+    data:{labels,datasets:[{data:values,borderColor:s.color,
+      backgroundColor:'transparent',borderWidth:1.8,pointRadius:0,tension:.2}]},
+    options:{
+      animation:false,responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{intersect:false,mode:'index'}},
+      scales:{
+        x:{ticks:{color:'#7d94a8',font:{family:"'IBM Plex Mono'",size:9},maxTicksLimit:6},
+           grid:{display:false}},
+        y:{ticks:{color:'#7d94a8',font:{family:"'IBM Plex Mono'",size:9}},
+           grid:{color:'rgba(36,64,92,.45)'}}
+      }
+    }
+  });
+}
+
+function drawTrack(latRows, lonRows){
+  trackLayer.clearLayers();
+  const n = Math.min(latRows.length, lonRows.length);
+  const pts = [];
+  for (let i=0;i<n;i++){
+    const la = latRows[i].result, lo = lonRows[i].result;
+    if (typeof la !== 'number' || typeof lo !== 'number') continue;
+    if (Math.abs(la) > 90 || Math.abs(lo) > 180) continue;
+    if (la === 0 && lo === 0) continue;
+    pts.push([la, lo]);
+  }
+  if (!pts.length) return;
+
+  L.polyline(pts, {color:'#2A9D8F', weight:2.5, opacity:.85}).addTo(trackLayer);
+  L.circleMarker(pts[0], {radius:5, color:'#0B1929', fillColor:'#7fc4a8',
+    fillOpacity:1, weight:2}).bindPopup('Start').addTo(trackLayer);
+  L.circleMarker(pts[pts.length-1], {radius:6, color:'#0B1929', fillColor:'#C99A4A',
+    fillOpacity:1, weight:2}).bindPopup('Latest').addTo(trackLayer);
+  map.fitBounds(L.polyline(pts).getBounds(), {padding:[30,30]});
+}
+
+function buildTable(byKey){
+  const times = (byKey['Latitude'] || []).map(r => r.phenomenonTime);
+  const cols = SERIES.map(s => s.key);
+  el('tableHead').innerHTML = '<th>Time (UTC)</th>' + cols.map(c=>`<th>${c}</th>`).join('');
+
+  const rows = [];
+  const shown = thin(times.map((t,i)=>i), 300);
+  el('tableBody').innerHTML = shown.map(i => {
+    const cells = cols.map(c => {
+      const v = byKey[c] && byKey[c][i] ? byKey[c][i].result : null;
+      return `<td>${typeof v === 'number' ? v.toFixed(3) : '—'}</td>`;
+    });
+    return `<tr><td>${times[i].replace('T',' ').replace('Z','')}</td>${cells.join('')}</tr>`;
+  }).join('');
+
+  /* full-resolution rows kept for CSV */
+  lastRows = times.map((t,i) => {
+    const o = {time:t};
+    for (const c of cols) o[c] = byKey[c] && byKey[c][i] ? byKey[c][i].result : '';
+    return o;
+  });
+}
+
+function downloadCSV(){
+  if (!lastRows.length) return;
+  const cols = ['time', ...SERIES.map(s=>s.key)];
+  const lines = [cols.join(',')];
+  for (const r of lastRows) lines.push(cols.map(c=>r[c]).join(','));
+  const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `sei-whale-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.csv`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+async function load(){
+  let win;
+  try { win = getWindow(); }
+  catch(e){ setNotice(e.message, true); return; }
+
+  el('loadBtn').disabled = true;
+  el('csvBtn').disabled = true;
+  setNotice('Loading readings…');
+  el('meta').innerHTML = '<span class="spinner">working…</span>';
+
+  try {
+    const byKey = {};
+    for (const s of SERIES){
+      byKey[s.key] = await fetchSeries(s.id, win.from, win.to);
+    }
+
+    const count = (byKey['Latitude'] || []).length;
+    if (!count){
+      setNotice('No readings recorded in that time range. Try a wider window.', false);
+      el('meta').textContent = '';
+      el('loadBtn').disabled = false;
+      return;
+    }
+
+    drawTrack(byKey['Latitude'], byKey['Longitude']);
+    for (const s of SERIES) if (s.chart) drawChart(s, byKey[s.key]);
+    buildTable(byKey);
+
+    el('notice').classList.add('hidden');
+    el('meta').textContent = `${count} readings · `
+      + `${win.from.toISOString().slice(0,16).replace('T',' ')} → `
+      + `${win.to.toISOString().slice(0,16).replace('T',' ')} UTC`;
+    el('csvBtn').disabled = false;
+  } catch(e){
+    setNotice('Could not load data: ' + e.message, true);
+    el('meta').textContent = '';
+  } finally {
+    el('loadBtn').disabled = false;
+  }
+}
+
+el('loadBtn').addEventListener('click', load);
+el('csvBtn').addEventListener('click', downloadCSV);
+load();
+</script>
+</body>
+</html>

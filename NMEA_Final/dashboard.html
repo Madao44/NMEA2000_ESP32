@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sei Whale — NMEA2000 Gateway</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B1929;
+  --panel-2:#0E1D30;
+  --line:#24405c;
+  --text:#DCE6EE;
+  --text-dim:#7d94a8;
+  --teal:#2A9D8F;
+  --brass:#C99A4A;
+  --red:#d9645a;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse at 20% -10%, #142c46 0%, transparent 55%),
+    var(--bg);
+  color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+  min-height:100vh;
+}
+::selection{background:var(--brass);color:#0B1929}
+a{color:var(--teal)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+
+header{
+  display:flex;align-items:baseline;gap:18px;
+  padding:22px 28px 18px;
+  border-bottom:1px solid var(--line);
+  flex-wrap:wrap;
+}
+header h1{font-size:1.35rem;font-weight:700;margin:0;letter-spacing:.2px}
+header .sub{color:var(--text-dim);font-size:.85rem}
+header nav{margin-left:auto;font-size:.85rem}
+header nav a{margin-left:16px;text-decoration:none}
+header nav a.current{color:var(--text);border-bottom:2px solid var(--brass);padding-bottom:2px}
+.status{
+  display:flex;align-items:center;gap:8px;
+  font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--text-dim);
+}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--red)}
+.dot.live{background:var(--teal);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(42,157,143,.55)}
+  50%{box-shadow:0 0 0 6px rgba(42,157,143,0)}
+}
+@media (prefers-reduced-motion:reduce){.dot.live{animation:none}}
+
+main{display:grid;grid-template-columns:1.15fr 1fr;gap:1px;background:var(--line)}
+@media (max-width:920px){main{grid-template-columns:1fr}}
+
+#map{height:min(62vh,560px);background:var(--panel-2)}
+.leaflet-container{background:var(--panel-2)!important;font-family:'IBM Plex Mono',monospace}
+
+.instruments{background:var(--bg);padding:22px 26px 8px}
+.group{margin-bottom:22px}
+.group h2{
+  font-variant:small-caps;font-size:.95rem;font-weight:600;letter-spacing:.5px;
+  color:var(--text-dim);margin:0 0 6px;padding-bottom:6px;
+  border-bottom:1px solid var(--line);
+}
+.readout{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:7px 0;border-bottom:1px dashed rgba(36,64,92,.55);
+}
+.readout:last-child{border-bottom:none}
+.readout .label{color:var(--text-dim);font-size:.82rem}
+.readout .value{font-family:'IBM Plex Mono',monospace;font-size:1rem;font-weight:500}
+.readout .value.stale{color:var(--text-dim);font-style:italic}
+
+/* AIS */
+.ais-section{grid-column:1/-1;background:var(--bg);padding:20px 26px 4px}
+.ais-section h2{
+  font-variant:small-caps;font-size:.95rem;font-weight:600;color:var(--text-dim);
+  margin:0 0 12px;border-bottom:1px solid var(--line);padding-bottom:6px;
+  display:flex;justify-content:space-between;align-items:baseline;
+}
+.ais-count{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.ais-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.ais-card{
+  border:1px solid var(--line);border-left:3px solid var(--teal);
+  padding:10px 12px;background:var(--panel-2);
+}
+.ais-card .vname{font-weight:600;font-size:.95rem;margin-bottom:2px}
+.ais-card .mmsi{
+  font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:var(--brass);
+  margin-bottom:6px;
+}
+.ais-card dl{
+  margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;
+  font-size:.78rem;
+}
+.ais-card dt{color:var(--text-dim)}
+.ais-card dd{margin:0;font-family:'IBM Plex Mono',monospace}
+.ais-empty{color:var(--text-dim);font-size:.85rem;padding:6px 0 10px}
+
+.charts{
+  grid-column:1/-1;background:var(--bg);padding:20px 26px 30px;
+  display:grid;grid-template-columns:1fr 1fr;gap:28px;
+}
+@media (max-width:720px){.charts{grid-template-columns:1fr}}
+.chart-card h2{
+  font-variant:small-caps;font-size:.95rem;font-weight:600;color:var(--text-dim);
+  margin:0 0 10px;border-bottom:1px solid var(--line);padding-bottom:6px;
+}
+.chart-wrap{height:190px}
+
+footer{padding:14px 28px 26px;font-size:.75rem;color:var(--text-dim);font-family:'IBM Plex Mono',monospace}
+footer a{color:var(--text-dim);text-decoration:underline}
+
+.error-banner{
+  display:none;margin:0 26px;padding:10px 14px;
+  border:1px solid var(--red);color:var(--red);
+  font-size:.85rem;font-family:'IBM Plex Mono',monospace;
+}
+.error-banner.show{display:block}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Sei Whale</h1>
+  <span class="sub">NMEA2000 gateway — live from FROST-Server</span>
+  <nav>
+    <a href="/" class="current">Live</a>
+    <a href="/history.html">History</a>
+  </nav>
+  <div class="status">
+    <span class="dot" id="dot"></span>
+    <span id="statusText">connecting…</span>
+  </div>
+</header>
+
+<div class="error-banner" id="errorBanner"></div>
+
+<main>
+  <div id="map"></div>
+
+  <div class="instruments">
+    <div class="group">
+      <h2>Position</h2>
+      <div class="readout"><span class="label">Latitude</span><span class="value" id="v-Latitude">—</span></div>
+      <div class="readout"><span class="label">Longitude</span><span class="value" id="v-Longitude">—</span></div>
+      <div class="readout"><span class="label">Accuracy (HDOP)</span><span class="value" id="v-HDOP">—</span></div>
+    </div>
+    <div class="group">
+      <h2>Navigation</h2>
+      <div class="readout"><span class="label">Speed over ground</span><span class="value" id="v-SpeedOverGround">—</span></div>
+      <div class="readout"><span class="label">Course over ground</span><span class="value" id="v-CourseOverGround">—</span></div>
+      <div class="readout"><span class="label">Heading</span><span class="value" id="v-Heading">—</span></div>
+      <div class="readout"><span class="label">Speed through water</span><span class="value" id="v-SpeedThroughWater">—</span></div>
+      <div class="readout"><span class="label">Water depth</span><span class="value" id="v-WaterDepth">—</span></div>
+      <div class="readout"><span class="label">Water temperature</span><span class="value" id="v-WaterTemperature">—</span></div>
+    </div>
+    <div class="group">
+      <h2>Engine — SELVA Sei Whale</h2>
+      <div class="readout"><span class="label">Speed</span><span class="value" id="v-EngineRPM">—</span></div>
+      <div class="readout"><span class="label">Coolant temperature</span><span class="value" id="v-CoolantTemperature">—</span></div>
+      <div class="readout"><span class="label">Oil pressure</span><span class="value" id="v-OilPressure">—</span></div>
+      <div class="readout"><span class="label">Oil temperature</span><span class="value" id="v-OilTemperature">—</span></div>
+      <div class="readout"><span class="label">Battery</span><span class="value" id="v-BatteryVoltage">—</span></div>
+      <div class="readout"><span class="label">Fuel level</span><span class="value" id="v-FuelLevel">—</span></div>
+    </div>
+  </div>
+
+  <div class="ais-section">
+    <h2>Nearby vessels (AIS) <span class="ais-count" id="aisCount"></span></h2>
+    <div class="ais-grid" id="aisGrid"></div>
+    <div class="ais-empty" id="aisEmpty">No AIS targets in range.</div>
+  </div>
+
+  <div class="charts">
+    <div class="chart-card">
+      <h2>Engine speed — recent readings</h2>
+      <div class="chart-wrap"><canvas id="chartRpm"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h2>Speed over ground — recent readings</h2>
+      <div class="chart-wrap"><canvas id="chartSog"></canvas></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  Refreshes every 10s &middot; source: <a href="/FROST-Server/v1.1/" target="_blank" rel="noopener">FROST-Server SensorThings API</a>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+const API = "/FROST-Server/v1.1";
+const REFRESH_MS = 10000;
+
+const FIELDS = {
+  Latitude:           {unit:"deg", dp:6},
+  Longitude:          {unit:"deg", dp:6},
+  HDOP:               {unit:"",    dp:2},
+  SpeedOverGround:    {unit:"kn",  dp:2},
+  CourseOverGround:   {unit:"deg", dp:1},
+  Heading:            {unit:"deg", dp:1},
+  SpeedThroughWater:  {unit:"kn",  dp:2},
+  WaterDepth:         {unit:"m",   dp:2},
+  WaterTemperature:   {unit:"C",   dp:1},
+  EngineRPM:          {unit:"rpm", dp:0},
+  CoolantTemperature: {unit:"C",   dp:1},
+  OilPressure:        {unit:"bar", dp:2},
+  OilTemperature:     {unit:"C",   dp:1},
+  BatteryVoltage:     {unit:"V",   dp:2},
+  FuelLevel:          {unit:"%",   dp:1},
+};
+
+/* ---- map ---- */
+const map = L.map('map').setView([41.2143,1.7308], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom:19, attribution:'&copy; OpenStreetMap'
+}).addTo(map);
+
+const ownIcon = L.divIcon({
+  className:'',
+  html:'<div style="width:14px;height:14px;border-radius:50%;background:#C99A4A;border:2px solid #0B1929;box-shadow:0 0 0 3px rgba(201,154,74,.35)"></div>',
+  iconSize:[14,14], iconAnchor:[7,7]
+});
+function aisIcon(cog){
+  return L.divIcon({
+    className:'',
+    html:`<div style="transform:rotate(${cog||0}deg);width:0;height:0;
+            border-left:6px solid transparent;border-right:6px solid transparent;
+            border-bottom:14px solid #2A9D8F;filter:drop-shadow(0 0 2px #0B1929)"></div>`,
+    iconSize:[12,14], iconAnchor:[6,7]
+  });
+}
+
+let ownMarker = null, mapCentered = false;
+let aisLayer = L.layerGroup().addTo(map);
+
+/* ---- charts ---- */
+function makeChart(ctx, color){
+  return new Chart(ctx, {
+    type:'line',
+    data:{labels:[],datasets:[{data:[],borderColor:color,backgroundColor:'transparent',
+      borderWidth:2,pointRadius:0,tension:.25}]},
+    options:{
+      animation:false, responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{display:false},
+        y:{grid:{color:'rgba(36,64,92,.5)'},
+           ticks:{color:'#7d94a8',font:{family:"'IBM Plex Mono'",size:10}}}
+      }
+    }
+  });
+}
+const chartRpm = makeChart(document.getElementById('chartRpm'), '#C99A4A');
+const chartSog = makeChart(document.getElementById('chartSog'), '#2A9D8F');
+
+const fmtTime = iso => new Date(iso).toLocaleTimeString('en-GB',
+  {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+function setStatus(ok, msg){
+  document.getElementById('dot').className = 'dot' + (ok ? ' live' : '');
+  document.getElementById('statusText').textContent = msg;
+  if (ok) document.getElementById('errorBanner').classList.remove('show');
+}
+function showError(msg){
+  setStatus(false, 'disconnected');
+  const b = document.getElementById('errorBanner');
+  b.textContent = msg;
+  b.classList.add('show');
+}
+
+function renderAIS(targets){
+  const grid = document.getElementById('aisGrid');
+  const empty = document.getElementById('aisEmpty');
+  const count = document.getElementById('aisCount');
+  aisLayer.clearLayers();
+
+  if (!Array.isArray(targets) || targets.length === 0){
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    count.textContent = '';
+    return;
+  }
+  empty.style.display = 'none';
+  count.textContent = targets.length + (targets.length === 1 ? ' target' : ' targets');
+
+  grid.innerHTML = targets.map(t => {
+    const name = (t.name && t.name.trim()) ? t.name : 'Unknown vessel';
+    return `<div class="ais-card">
+      <div class="vname">${name}</div>
+      <div class="mmsi">MMSI ${t.mmsi}</div>
+      <dl>
+        <dt>Position</dt><dd>${(+t.lat).toFixed(4)}, ${(+t.lon).toFixed(4)}</dd>
+        <dt>SOG</dt><dd>${(+t.sog).toFixed(1)} kn</dd>
+        <dt>COG</dt><dd>${(+t.cog).toFixed(0)} deg</dd>
+        <dt>Status</dt><dd>${t.status || '—'}</dd>
+        ${t.call && t.call.trim() ? `<dt>Call sign</dt><dd>${t.call}</dd>` : ''}
+      </dl>
+    </div>`;
+  }).join('');
+
+  for (const t of targets){
+    if (t.lat == null || t.lon == null) continue;
+    if (Math.abs(t.lat) > 90 || Math.abs(t.lon) > 180) continue;
+    L.marker([t.lat, t.lon], {icon: aisIcon(t.cog)})
+      .bindPopup(`<b>${(t.name && t.name.trim()) || 'Unknown vessel'}</b><br>
+                  MMSI ${t.mmsi}<br>${(+t.sog).toFixed(1)} kn · ${(+t.cog).toFixed(0)} deg`)
+      .addTo(aisLayer);
+  }
+}
+
+async function refreshLatest(){
+  const url = `${API}/Datastreams?$select=id,name&$expand=Observations($orderby=phenomenonTime%20desc;$top=1;$select=phenomenonTime,result)`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`FROST-Server returned ${res.status}`);
+  const data = await res.json();
+
+  let latestTime = null, lat = null, lon = null, aisTargets = null;
+
+  for (const ds of data.value){
+    const key = ds.name.includes(' - ') ? ds.name.split(' - ').pop().trim() : ds.name;
+    const obs = ds.Observations && ds.Observations[0];
+    if (!obs) continue;
+
+    const t = new Date(obs.phenomenonTime);
+    if (!latestTime || t > latestTime) latestTime = t;
+
+    if (key === 'AISTargets'){
+      let r = obs.result;
+      if (typeof r === 'string'){ try { r = JSON.parse(r); } catch(e){ r = null; } }
+      aisTargets = r;
+      continue;
+    }
+
+    const cfg = FIELDS[key];
+    const el = document.getElementById('v-' + key);
+    if (!cfg || !el) continue;
+
+    const val = obs.result;
+    el.textContent = (typeof val === 'number' ? val.toFixed(cfg.dp) : val)
+                   + (cfg.unit ? ' ' + cfg.unit : '');
+    el.classList.remove('stale');
+
+    if (key === 'Latitude') lat = val;
+    if (key === 'Longitude') lon = val;
+  }
+
+  renderAIS(aisTargets);
+
+  if (lat != null && lon != null){
+    const pos = [lat, lon];
+    if (!ownMarker) ownMarker = L.marker(pos, {icon:ownIcon}).addTo(map);
+    else ownMarker.setLatLng(pos);
+    if (!mapCentered){ map.setView(pos, 15); mapCentered = true; }
+  }
+
+  setStatus(true, latestTime ? 'last reading ' + fmtTime(latestTime.toISOString())
+                             : 'connected, waiting for data');
+}
+
+async function refreshHistory(datastreamId, chart){
+  const url = `${API}/Datastreams(${datastreamId})/Observations?$orderby=phenomenonTime%20desc&$top=40&$select=phenomenonTime,result`;
+  const res = await fetch(url);
+  if (!res.ok) return;
+  const rows = (await res.json()).value.slice().reverse();
+  chart.data.labels = rows.map(r => fmtTime(r.phenomenonTime));
+  chart.data.datasets[0].data = rows.map(r => r.result);
+  chart.update();
+}
+
+async function tick(){
+  try {
+    await refreshLatest();
+    await refreshHistory(7, chartRpm);
+    await refreshHistory(3, chartSog);
+  } catch(e){
+    showError('Cannot reach FROST-Server: ' + e.message);
+  }
+}
+
+tick();
+setInterval(tick, REFRESH_MS);
+</script>
+</body>
+</html>

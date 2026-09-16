@@ -29,15 +29,21 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
+#include "freertos/event_groups.h"
 
 /* ─── Configuration ─────────────────────────────────────────────────────── */
 #define CAN_TX_GPIO   GPIO_NUM_5
 #define CAN_RX_GPIO   GPIO_NUM_4
 #define CAN_BITRATE   250000
 #define RX_POOL_DEPTH 64
-#define AP_SSID       "NMEA2000"
-#define AP_PASSWORD   "sportnav"
-#define AP_MAX_CONN   4
+
+/* Reseau LAN fourni par le routeur 4G/GSM D-Link DWR-960.
+ * L'ESP32 se connecte en Wi-Fi STATION sur ce reseau (au lieu de creer
+ * son propre point d'acces). Remplace SSID/mot de passe par ceux du
+ * DWR-960 (visibles dans son interface d'admin, page "Wireless/WLAN"). */
+#define GSM_ROUTER_SSID       "dlink_DWR-960_69C6"
+#define GSM_ROUTER_PASSWORD   "zScFh79684"
+#define WIFI_RECONNECT_DELAY_MS 2000
 
 static const char *TAG = "NMEA_RX";
 
@@ -826,20 +832,74 @@ static void http_start(void) {
     ESP_LOGI(TAG,"HTTP + WebSocket on port 80");
 }
 
-/* ─── Wi-Fi AP ───────────────────────────────────────────────────────────── */
-static void wifi_ap_init(void) {
+/* ─── Wi-Fi STATION (rejoint le LAN du DWR-960) ──────────────────────────── */
+static EventGroupHandle_t s_wifi_event_group;
+#define WIFI_CONNECTED_BIT BIT0
+
+static void wifi_event_handler(void *arg, esp_event_base_t event_base,
+                                int32_t event_id, void *event_data)
+{
+    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
+        esp_wifi_connect();
+    } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
+        xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+        ESP_LOGW(TAG, "Wi-Fi deconnecte du DWR-960, nouvelle tentative dans %dms",
+                 WIFI_RECONNECT_DELAY_MS);
+        vTaskDelay(pdMS_TO_TICKS(WIFI_RECONNECT_DELAY_MS));
+        esp_wifi_connect();
+    } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
+        ip_event_got_ip_t *event = (ip_event_got_ip_t *) event_data;
+        ESP_LOGI(TAG, "Connecte au DWR-960 - Dashboard disponible sur http://" IPSTR,
+                 IP2STR(&event->ip_info.ip));
+        xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+    }
+}
+
+static void wifi_sta_init(void) {
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
-    esp_netif_create_default_wifi_ap();
-    wifi_init_config_t cfg=WIFI_INIT_CONFIG_DEFAULT();
+    esp_netif_create_default_wifi_sta();
+
+    s_wifi_event_group = xEventGroupCreate();
+
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-    wifi_config_t ap={.ap={.ssid=AP_SSID,.password=AP_PASSWORD,
-        .ssid_len=strlen(AP_SSID),.channel=6,
-        .authmode=WIFI_AUTH_WPA2_PSK,.max_connection=AP_MAX_CONN}};
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_AP));
-    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP,&ap));
+
+    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID,
+                                                &wifi_event_handler, NULL));
+    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP,
+                                                &wifi_event_handler, NULL));
+
+    wifi_config_t sta = {
+        .sta = {
+            .ssid     = GSM_ROUTER_SSID,
+            .password = GSM_ROUTER_PASSWORD,
+            .threshold.authmode = WIFI_AUTH_WPA2_PSK,
+        },
+    };
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &sta));
     ESP_ERROR_CHECK(esp_wifi_start());
-    ESP_LOGI(TAG,"Hotspot: %s / %s  IP=192.168.4.1",AP_SSID,AP_PASSWORD);
+
+    uint8_t mac[6];
+    esp_wifi_get_mac(WIFI_IF_STA, mac);
+    ESP_LOGI(TAG, "Adresse MAC Wi-Fi ESP32 (a saisir dans la reservation DHCP "
+                  "du DWR-960): %02X:%02X:%02X:%02X:%02X:%02X",
+             mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
+    ESP_LOGI(TAG, "Connexion au LAN du DWR-960 (SSID: %s)...", GSM_ROUTER_SSID);
+
+    /* Attend la connexion (30s max) avant de continuer, pour logguer l'IP.
+     * Le serveur HTTP demarre de toute facon meme si ce delai expire :
+     * la reconnexion continuera en tache de fond via wifi_event_handler. */
+    EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group, WIFI_CONNECTED_BIT,
+                                           pdFALSE, pdFALSE, pdMS_TO_TICKS(30000));
+    if (bits & WIFI_CONNECTED_BIT) {
+        ESP_LOGI(TAG, "Wi-Fi connecte au DWR-960.");
+    } else {
+        ESP_LOGW(TAG, "Pas encore connecte au DWR-960 apres 30s, "
+                      "la reconnexion continue en arriere-plan.");
+    }
 }
 
 /* ─── Pool RX CAN ────────────────────────────────────────────────────────── */
@@ -888,7 +948,7 @@ void app_main(void)
     ws_init();
     memset(g_ais, 0, sizeof(g_ais));
 
-    wifi_ap_init();
+    wifi_sta_init();
     http_start();
     xTaskCreate(broadcast_task, "broadcast", 8192, NULL, 5, NULL);
 
@@ -912,7 +972,9 @@ void app_main(void)
     ESP_ERROR_CHECK(twai_node_enable(node));
 
     ESP_LOGI(TAG,"TWAI TX=GPIO%d RX=GPIO%d @ %d bps",CAN_TX_GPIO,CAN_RX_GPIO,CAN_BITRATE);
-    ESP_LOGI(TAG,"Open http://192.168.4.1 on WiFi: %s / %s",AP_SSID,AP_PASSWORD);
+    ESP_LOGI(TAG,"Dashboard accessible depuis n'importe quel appareil sur le LAN du DWR-960 "
+                 "(voir l'IP loguee ci-dessus, ou consultez la liste des clients DHCP "
+                 "dans l'interface d'admin du DWR-960).");
 
     while (1) {
         if (xSemaphoreTake(pending_frames, pdMS_TO_TICKS(100)) != pdTRUE) continue;

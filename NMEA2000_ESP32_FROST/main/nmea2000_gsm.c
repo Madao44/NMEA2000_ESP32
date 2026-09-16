@@ -24,20 +24,35 @@
 #include "esp_wifi.h"
 #include "esp_event.h"
 #include "esp_netif.h"
+#include "esp_netif_sntp.h"
+#include "esp_sntp.h"
 #include "esp_http_server.h"
+#include "esp_http_client.h"
+#include "esp_crt_bundle.h"
 #include "nvs_flash.h"
+#include <time.h>
+#include <sys/time.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
+#include "freertos/event_groups.h"
 
 /* ─── Configuration ─────────────────────────────────────────────────────── */
 #define CAN_TX_GPIO   GPIO_NUM_5
 #define CAN_RX_GPIO   GPIO_NUM_4
 #define CAN_BITRATE   250000
 #define RX_POOL_DEPTH 64
-#define AP_SSID       "NMEA2000"
-#define AP_PASSWORD   "sportnav"
-#define AP_MAX_CONN   4
+
+/* Reseau LAN fourni par le routeur 4G/GSM D-Link DWR-960.
+ * L'ESP32 se connecte en Wi-Fi STATION sur ce reseau (au lieu de creer
+ * son propre point d'acces). Remplace SSID/mot de passe par ceux du
+ * DWR-960 (visibles dans son interface d'admin, page "Wireless/WLAN"). */
+/* IMPORTANT : l'ESP32 ne supporte que le Wi-Fi 2.4 GHz. Utilise bien le SSID
+ * de la bande 2.4 GHz du DWR-960 (celui SANS "-5G" dans le nom), sinon
+ * l'ESP32 ne verra jamais le reseau. */
+#define GSM_ROUTER_SSID       "dlink_DWR-960_69C6"
+#define GSM_ROUTER_PASSWORD   "zScFh79684"
+#define WIFI_RECONNECT_DELAY_MS 2000
 
 static const char *TAG = "NMEA_RX";
 
@@ -111,6 +126,7 @@ static gps_t        g_gps    = { .hdop=99.9f, .vdop=99.9f };
 static engine_t     g_engine = { .battery_v=0.0f };
 static ais_target_t g_ais[MAX_AIS_TARGETS];
 static SemaphoreHandle_t g_mutex;
+static volatile bool g_time_synced = false; /* horloge systeme synchronisee depuis le GPS (PGN 129033) */
 
 /* ─── AIS helpers ────────────────────────────────────────────────────────── */
 static ais_target_t *ais_find_or_create(uint32_t mmsi)
@@ -269,23 +285,42 @@ static void dec_gnss_position(const uint8_t *d, uint8_t l)
     for(int i=0;i<8;i++) lo|=((int64_t)d[19+i]<<(8*i));
     if (la&((int64_t)1<<55)) la|=~(((int64_t)1<<56)-1);
     if (lo&((int64_t)1<<55)) lo|=~(((int64_t)1<<56)-1);
+    /* NOTE : sur ce GPS (Sportnav SPO25F), le decodage lat/lon de cette PGN
+     * (129029, fast-packet) produit des valeurs aberrantes - probablement
+     * un decalage d'octets specifique a cette implementation. On ne s'en
+     * sert donc PAS pour ecraser g_gps.lat/lon (deja mis a jour de facon
+     * fiable par PGN 129025). On garde juste le nombre de satellites. */
     xSemaphoreTake(g_mutex, portMAX_DELAY);
-    g_gps.lat=la*1e-7; g_gps.lon=lo*1e-7; g_gps.fix=1;
-    g_gps.num_svs=l>28?d[28]:0;
+    g_gps.fix=1;
+    g_gps.num_svs=(l>28 && d[28]!=0xFF)?d[28]:g_gps.num_svs;
     xSemaphoreGive(g_mutex);
-    ESP_LOGI(TAG, "[GPS] GNSS lat=%.7f lon=%.7f svs=%d", la*1e-7, lo*1e-7, g_gps.num_svs);
+    ESP_LOGD(TAG, "[GPS] GNSS (129029) recue, svs=%d (lat/lon ignores, voir 129025)", g_gps.num_svs);
 }
 
 static void dec_time_date(const uint8_t *d, uint8_t l)
 {
-    if (l < 10) return;
-    uint64_t sx=0;
-    for(int i=0;i<8;i++) sx|=((uint64_t)d[2+i]<<(8*i));
-    uint32_t s=(uint32_t)(sx/10000);
+    if (l < 7) return;
+    /* PGN 129033 : SID(1) + Date jours depuis epoch (2, LE) +
+     * Time 0.0001s depuis minuit (4, LE) + Local offset minutes (2, LE) */
+    uint16_t days = d[1] | ((uint16_t)d[2] << 8);
+    uint32_t t_i  = d[3] | ((uint32_t)d[4]<<8) | ((uint32_t)d[5]<<16) | ((uint32_t)d[6]<<24);
+    uint32_t secs_of_day = t_i / 10000;
+
+    time_t epoch = (time_t)days * 86400 + secs_of_day;
+    struct tm tm_utc;
+    gmtime_r(&epoch, &tm_utc);
+
     xSemaphoreTake(g_mutex, portMAX_DELAY);
-    snprintf(g_gps.utc, sizeof(g_gps.utc), "%02lu:%02lu:%02lu",
-             (unsigned long)(s/3600),(unsigned long)((s%3600)/60),(unsigned long)(s%60));
+    snprintf(g_gps.utc, sizeof(g_gps.utc), "%02d:%02d:%02d",
+             tm_utc.tm_hour, tm_utc.tm_min, tm_utc.tm_sec);
     xSemaphoreGive(g_mutex);
+
+    if (!g_time_synced) {
+        struct timeval tv = { .tv_sec = epoch, .tv_usec = 0 };
+        settimeofday(&tv, NULL);
+        g_time_synced = true;
+        ESP_LOGI(TAG, "[GPS] Horloge systeme synchronisee sur l'heure GPS (UTC)");
+    }
     ESP_LOGI(TAG, "[GPS] UTC=%s", g_gps.utc);
 }
 
@@ -555,29 +590,39 @@ static void dec_ais_static_b(const uint8_t *d, uint8_t l, uint8_t src, uint32_t 
 }
 
 /* ─── JSON builder ───────────────────────────────────────────────────────── */
+
+/* Construit le tableau JSON des cibles AIS actives.
+ * ATTENTION : suppose que g_mutex est DEJA pris par l'appelant
+ * (g_mutex n'est pas recursif). */
+static void ais_array_json_locked(char *buf, size_t len)
+{
+    int used = snprintf(buf, len, "[");
+    uint32_t now_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
+    for (int i = 0; i < MAX_AIS_TARGETS; i++) {
+        if (!g_ais[i].valid) continue;
+        if (now_ms - g_ais[i].last_seen_ms > 30000) continue;
+        int n = snprintf(buf + used, (len > (size_t)used + 2) ? len - used - 2 : 0,
+            "%s{\"mmsi\":%"PRIu32",\"lat\":%.5f,\"lon\":%.5f,"
+            "\"sog\":%.1f,\"cog\":%.1f,\"name\":\"%s\","
+            "\"call\":\"%s\",\"status\":\"%s\"}",
+            (used > 1) ? "," : "",
+            g_ais[i].mmsi, g_ais[i].lat, g_ais[i].lon,
+            g_ais[i].sog_kn, g_ais[i].cog_deg,
+            g_ais[i].name, g_ais[i].callsign,
+            ais_nav_status(g_ais[i].nav_status));
+        if (n > 0) used += n;
+        if ((size_t)used >= len - 2) break;
+    }
+    snprintf(buf + used, len - used, "]");
+}
+
 static void build_json(char *buf, size_t len)
 {
     xSemaphoreTake(g_mutex, portMAX_DELAY);
 
     /* AIS targets JSON */
-    char ais_json[1024] = "[";
-    int  ais_len = 1;
-    uint32_t now_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
-    for (int i = 0; i < MAX_AIS_TARGETS; i++) {
-        if (!g_ais[i].valid) continue;
-        if (now_ms - g_ais[i].last_seen_ms > 30000) continue;
-        int n = snprintf(ais_json + ais_len, sizeof(ais_json) - ais_len - 2,
-            "%s{\"mmsi\":%"PRIu32",\"lat\":%.5f,\"lon\":%.5f,"
-            "\"sog\":%.1f,\"cog\":%.1f,\"name\":\"%s\","
-            "\"call\":\"%s\",\"status\":\"%s\"}",
-            (ais_len > 1) ? "," : "",
-            g_ais[i].mmsi, g_ais[i].lat, g_ais[i].lon,
-            g_ais[i].sog_kn, g_ais[i].cog_deg,
-            g_ais[i].name, g_ais[i].callsign,
-            ais_nav_status(g_ais[i].nav_status));
-        if (n > 0) ais_len += n;
-    }
-    strcat(ais_json, "]");
+    char ais_json[1024];
+    ais_array_json_locked(ais_json, sizeof(ais_json));
 
     snprintf(buf, len,
         "{"
@@ -826,22 +871,243 @@ static void http_start(void) {
     ESP_LOGI(TAG,"HTTP + WebSocket on port 80");
 }
 
-/* ─── Wi-Fi AP ───────────────────────────────────────────────────────────── */
-static void wifi_ap_init(void) {
-    ESP_ERROR_CHECK(esp_netif_init());
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-    esp_netif_create_default_wifi_ap();
-    wifi_init_config_t cfg=WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-    wifi_config_t ap={.ap={.ssid=AP_SSID,.password=AP_PASSWORD,
-        .ssid_len=strlen(AP_SSID),.channel=6,
-        .authmode=WIFI_AUTH_WPA2_PSK,.max_connection=AP_MAX_CONN}};
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_AP));
-    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_AP,&ap));
-    ESP_ERROR_CHECK(esp_wifi_start());
-    ESP_LOGI(TAG,"Hotspot: %s / %s  IP=192.168.4.1",AP_SSID,AP_PASSWORD);
+/* ─── Wi-Fi STATION (rejoint le LAN du DWR-960) ──────────────────────────── */
+static EventGroupHandle_t s_wifi_event_group;
+#define WIFI_CONNECTED_BIT BIT0
+
+static void wifi_event_handler(void *arg, esp_event_base_t event_base,
+                                int32_t event_id, void *event_data)
+{
+    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
+        esp_wifi_connect();
+    } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
+        wifi_event_sta_disconnected_t *event = (wifi_event_sta_disconnected_t *) event_data;
+        xEventGroupClearBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+        ESP_LOGW(TAG, "Wi-Fi deconnecte du DWR-960 (raison=%d), nouvelle tentative dans %dms",
+                 event->reason, WIFI_RECONNECT_DELAY_MS);
+        vTaskDelay(pdMS_TO_TICKS(WIFI_RECONNECT_DELAY_MS));
+        esp_wifi_connect();
+    } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
+        ip_event_got_ip_t *event = (ip_event_got_ip_t *) event_data;
+        ESP_LOGI(TAG, "Connecte au DWR-960 - Dashboard disponible sur http://" IPSTR,
+                 IP2STR(&event->ip_info.ip));
+        xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+    }
 }
 
+static void wifi_sta_init(void) {
+    ESP_ERROR_CHECK(esp_netif_init());
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
+    esp_netif_create_default_wifi_sta();
+
+    s_wifi_event_group = xEventGroupCreate();
+
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+
+    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID,
+                                                &wifi_event_handler, NULL));
+    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP,
+                                                &wifi_event_handler, NULL));
+
+    wifi_config_t sta = {
+        .sta = {
+            .ssid     = GSM_ROUTER_SSID,
+            .password = GSM_ROUTER_PASSWORD,
+            .threshold.authmode = WIFI_AUTH_WPA2_PSK,
+        },
+    };
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &sta));
+    ESP_ERROR_CHECK(esp_wifi_start());
+
+    uint8_t mac[6];
+    esp_wifi_get_mac(WIFI_IF_STA, mac);
+    ESP_LOGI(TAG, "Adresse MAC Wi-Fi ESP32 (a saisir dans la reservation DHCP "
+                  "du DWR-960): %02X:%02X:%02X:%02X:%02X:%02X",
+             mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
+    ESP_LOGI(TAG, "Connexion au LAN du DWR-960 (SSID: %s)...", GSM_ROUTER_SSID);
+
+    /* Attend la connexion (30s max) avant de continuer, pour logguer l'IP.
+     * Le serveur HTTP demarre de toute facon meme si ce delai expire :
+     * la reconnexion continuera en tache de fond via wifi_event_handler. */
+    EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group, WIFI_CONNECTED_BIT,
+                                           pdFALSE, pdFALSE, pdMS_TO_TICKS(30000));
+    if (bits & WIFI_CONNECTED_BIT) {
+        ESP_LOGI(TAG, "Wi-Fi connecte au DWR-960.");
+    } else {
+        ESP_LOGW(TAG, "Pas encore connecte au DWR-960 apres 30s, "
+                      "la reconnexion continue en arriere-plan.");
+    }
+}
+
+/* ─── FROST-Server (SensorThings API) ────────────────────────────────────── */
+/* Publie GPS + moteur chaque seconde vers un serveur FROST-Server via HTTPS,
+ * en utilisant l'extension dataArray / CreateObservations (un seul POST
+ * regroupant toutes les grandeurs, plus economique sur une liaison WAN
+ * cellulaire qu'une requete HTTP par grandeur). */
+/* MODE TEST LOCAL : pointe vers ton PC (meme reseau Wi-Fi DWR-960 que
+ * l'ESP32). Remplace 10.5.159.131 par l'IP de ton PC ("ipconfig" sous
+ * Windows). Pour la production plus tard, remets l'URL HTTPS ci-dessous. */
+#define FROST_BASE_URL   "https://nmea2k.obsea.es/FROST-Server/v1.1"
+#define FROST_PERIOD_MS  1000
+
+/* Identifiants (@iot.id) des Datastreams crees par bootstrap_frost.py.
+ * L'ORDRE DOIT CORRESPONDRE exactement a l'ordre des valeurs dans
+ * frost_publish_task() ci-dessous (et a la liste PARAMETERS du script). */
+static const int FROST_DATASTREAM_IDS[] = {
+    1,  /* Latitude            */
+    2,  /* Longitude           */
+    3,  /* SpeedOverGround     */
+    4,  /* CourseOverGround    */
+    5,  /* Heading             */
+    6,  /* HDOP                */
+    7,  /* EngineRPM           */
+    8,  /* CoolantTemperature  */
+    9,  /* OilPressure         */
+    10, /* OilTemperature      */
+    11, /* BatteryVoltage      */
+    12, /* FuelLevel           */
+    13, /* WaterDepth          */
+    14, /* WaterTemperature    */
+    15, /* SpeedThroughWater   */
+};
+#define FROST_NUM_DATASTREAMS (sizeof(FROST_DATASTREAM_IDS)/sizeof(FROST_DATASTREAM_IDS[0]))
+
+/* Datastream distinct pour l'AIS : le nombre de cibles varie et chaque cible
+ * a un MMSI different, donc on ne peut pas faire "un Datastream par valeur".
+ * On publie a la place un seul Datastream dont le "result" est le tableau
+ * JSON complet des cibles actives. Mettre a 0 pour desactiver l'envoi AIS. */
+#define FROST_AIS_DATASTREAM_ID 16
+
+static void frost_publish_task(void *arg)
+{
+    static char json[6144];
+    static char iso_time[32];
+    static char ais_json[1024];
+
+    while (1) {
+        vTaskDelay(pdMS_TO_TICKS(FROST_PERIOD_MS));
+
+        if (!g_time_synced) continue; /* pas encore d'heure GPS valide, on saute */
+
+        time_t now = time(NULL);
+        struct tm tm_utc;
+        gmtime_r(&now, &tm_utc);
+        strftime(iso_time, sizeof(iso_time), "%Y-%m-%dT%H:%M:%SZ", &tm_utc);
+
+        xSemaphoreTake(g_mutex, portMAX_DELAY);
+        double values[FROST_NUM_DATASTREAMS] = {
+            g_gps.lat, g_gps.lon, g_gps.sog_kn, g_gps.cog_deg,
+            g_gps.hdg_deg, g_gps.hdop,
+            g_engine.rpm, g_engine.coolant_temp_c, g_engine.oil_pressure_bar,
+            g_engine.oil_temp_c, g_engine.battery_v, g_engine.fuel_level_pct,
+            g_engine.water_depth_m, g_engine.water_temp_c, g_engine.speed_water_kn,
+        };
+        ais_array_json_locked(ais_json, sizeof(ais_json));
+        xSemaphoreGive(g_mutex);
+
+        int len = snprintf(json, sizeof(json), "[");
+        for (size_t i = 0; i < FROST_NUM_DATASTREAMS; i++) {
+            len += snprintf(json + len, sizeof(json) - len,
+                "%s{\"Datastream\":{\"@iot.id\":%d},"
+                "\"components\":[\"phenomenonTime\",\"result\"],"
+                "\"dataArray\":[[\"%s\",%.6f]]}",
+                (i > 0) ? "," : "", FROST_DATASTREAM_IDS[i], iso_time, values[i]);
+        }
+        /* Cibles AIS : le "result" est ici le tableau JSON complet, pas un nombre. */
+        if (FROST_AIS_DATASTREAM_ID > 0) {
+            len += snprintf(json + len, sizeof(json) - len,
+                ",{\"Datastream\":{\"@iot.id\":%d},"
+                "\"components\":[\"phenomenonTime\",\"result\"],"
+                "\"dataArray\":[[\"%s\",%s]]}",
+                FROST_AIS_DATASTREAM_ID, iso_time, ais_json);
+        }
+        snprintf(json + len, sizeof(json) - len, "]");
+
+        esp_http_client_config_t cfg = {
+            .url = FROST_BASE_URL "/CreateObservations",
+            .method = HTTP_METHOD_POST,
+            .crt_bundle_attach = esp_crt_bundle_attach, /* ignore en HTTP, utile quand on repassera en HTTPS */
+            .timeout_ms = 4000,
+        };
+        esp_http_client_handle_t client = esp_http_client_init(&cfg);
+        esp_http_client_set_header(client, "Content-Type", "application/json");
+        esp_http_client_set_post_field(client, json, strlen(json));
+
+        esp_err_t err = esp_http_client_perform(client);
+        if (err == ESP_OK) {
+            int status = esp_http_client_get_status_code(client);
+            if (status < 200 || status >= 300)
+                ESP_LOGW(TAG, "[FROST] POST HTTP %d", status);
+        } else {
+            ESP_LOGW(TAG, "[FROST] Echec POST: %s", esp_err_to_name(err));
+        }
+        esp_http_client_cleanup(client);
+    }
+}
+
+/* ─── Synchronisation horaire via NTP (secours si le GPS n'envoie pas ─────
+ * PGN 129033, ou si sa reception echoue) ──────────────────────────────── */
+static void time_sync_task(void *arg)
+{
+    /* Attend que le Wi-Fi soit connecte avant de lancer la synchro NTP */
+    xEventGroupWaitBits(s_wifi_event_group, WIFI_CONNECTED_BIT, pdFALSE, pdFALSE, portMAX_DELAY);
+
+    while (!g_time_synced) {
+        ESP_LOGI(TAG, "Synchronisation de l'horloge via NTP...");
+        esp_sntp_config_t config = ESP_NETIF_SNTP_DEFAULT_CONFIG("pool.ntp.org");
+        esp_netif_sntp_init(&config);
+
+        if (esp_netif_sntp_sync_wait(pdMS_TO_TICKS(15000)) == ESP_OK) {
+            g_time_synced = true;
+            ESP_LOGI(TAG, "Horloge systeme synchronisee via NTP.");
+        } else {
+            ESP_LOGW(TAG, "Echec de synchronisation NTP, nouvelle tentative dans 30s...");
+            esp_netif_sntp_deinit();
+            vTaskDelay(pdMS_TO_TICKS(30000));
+        }
+    }
+    vTaskDelete(NULL);
+}
+/* ─── Inventaire des PGN vus sur le bus (diagnostic) ─────────────────────── */
+#define PGN_SEEN_MAX 48
+typedef struct { uint32_t pgn; uint32_t count; uint8_t last_src; } pgn_seen_t;
+static pgn_seen_t g_pgn_seen[PGN_SEEN_MAX];
+static SemaphoreHandle_t g_pgn_mutex;
+
+static void pgn_seen_record(uint32_t pgn, uint8_t src)
+{
+    xSemaphoreTake(g_pgn_mutex, portMAX_DELAY);
+    for (int i = 0; i < PGN_SEEN_MAX; i++) {
+        if (g_pgn_seen[i].count && g_pgn_seen[i].pgn == pgn) {
+            g_pgn_seen[i].count++; g_pgn_seen[i].last_src = src;
+            xSemaphoreGive(g_pgn_mutex); return;
+        }
+        if (!g_pgn_seen[i].count) {
+            g_pgn_seen[i].pgn = pgn; g_pgn_seen[i].count = 1;
+            g_pgn_seen[i].last_src = src;
+            xSemaphoreGive(g_pgn_mutex); return;
+        }
+    }
+    xSemaphoreGive(g_pgn_mutex);
+}
+
+static void pgn_inventory_task(void *arg)
+{
+    while (1) {
+        vTaskDelay(pdMS_TO_TICKS(10000));
+        xSemaphoreTake(g_pgn_mutex, portMAX_DELAY);
+        ESP_LOGW(TAG, "--- PGN vus sur le bus ---");
+        for (int i = 0; i < PGN_SEEN_MAX; i++) {
+            if (!g_pgn_seen[i].count) break;
+            ESP_LOGW(TAG, "  PGN %6"PRIu32"  x%-6"PRIu32" src=0x%02X",
+                     g_pgn_seen[i].pgn, g_pgn_seen[i].count, g_pgn_seen[i].last_src);
+        }
+        xSemaphoreGive(g_pgn_mutex);
+    }
+}
 /* ─── Pool RX CAN ────────────────────────────────────────────────────────── */
 typedef struct { twai_frame_t frame; uint8_t data[8]; } rx_item_t;
 static rx_item_t         rx_pool[RX_POOL_DEPTH];
@@ -888,9 +1154,14 @@ void app_main(void)
     ws_init();
     memset(g_ais, 0, sizeof(g_ais));
 
-    wifi_ap_init();
+    wifi_sta_init();
     http_start();
     xTaskCreate(broadcast_task, "broadcast", 8192, NULL, 5, NULL);
+    xTaskCreate(frost_publish_task, "frost_pub", 12288, NULL, 4, NULL);
+    xTaskCreate(time_sync_task, "time_sync", 4096, NULL, 4, NULL);
+        g_pgn_mutex = xSemaphoreCreateMutex();
+    memset(g_pgn_seen, 0, sizeof(g_pgn_seen));
+    xTaskCreate(pgn_inventory_task, "pgn_inv", 4096, NULL, 2, NULL);
 
     free_slots     = xSemaphoreCreateCounting(RX_POOL_DEPTH, RX_POOL_DEPTH);
     pending_frames = xSemaphoreCreateCounting(RX_POOL_DEPTH, 0);
@@ -912,7 +1183,9 @@ void app_main(void)
     ESP_ERROR_CHECK(twai_node_enable(node));
 
     ESP_LOGI(TAG,"TWAI TX=GPIO%d RX=GPIO%d @ %d bps",CAN_TX_GPIO,CAN_RX_GPIO,CAN_BITRATE);
-    ESP_LOGI(TAG,"Open http://192.168.4.1 on WiFi: %s / %s",AP_SSID,AP_PASSWORD);
+    ESP_LOGI(TAG,"Dashboard accessible depuis n'importe quel appareil sur le LAN du DWR-960 "
+                 "(voir l'IP loguee ci-dessus, ou consultez la liste des clients DHCP "
+                 "dans l'interface d'admin du DWR-960).");
 
     while (1) {
         if (xSemaphoreTake(pending_frames, pdMS_TO_TICKS(100)) != pdTRUE) continue;
@@ -922,6 +1195,7 @@ void app_main(void)
 
         uint8_t prio, src; uint32_t pgn;
         parse_can_id(item->frame.header.id, &prio, &pgn, &src);
+        pgn_seen_record(pgn, src);
         const uint8_t *raw=item->frame.buffer;
         uint8_t dlc=item->frame.header.dlc;
         xSemaphoreGive(free_slots);

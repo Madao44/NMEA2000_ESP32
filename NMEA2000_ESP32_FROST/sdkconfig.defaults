@@ -1,0 +1,5 @@
+# Necessaire pour les connexions HTTPS (esp_crt_bundle_attach) utilisees
+# par la publication vers FROST-Server.
+CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y
+CONFIG_MBEDTLS_CERTIFICATE_BUNDLE_DEFAULT_FULL=y
+CONFIG_HTTPD_WS_SUPPORT=y
