@@ -72,8 +72,6 @@ __pycache__/
 *.ico
 *.svg
 
-# PDF
-*.pdf
 
 # Exception : autoriser les images de doc
 !docs/images/*.png
