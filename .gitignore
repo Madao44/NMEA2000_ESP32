@@ -76,3 +76,5 @@ __pycache__/
 # Exception : autoriser les images de doc
 !docs/images/*.png
 !docs/images/*.jpg
+
+*.docx
